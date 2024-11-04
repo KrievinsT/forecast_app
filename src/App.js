@@ -6,11 +6,12 @@ function App() {
   const [dataFor, setDataFor] = useState(null);
   const [error, setError] = useState(null);
   const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
   const [isFahrenheit, setIsFahrenheit] = useState(false);
   const [isMPH, setIsMPH] = useState(false);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
-  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
+  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
 
   const fetchData = () => {
     if (!location) return;
@@ -70,6 +71,11 @@ function App() {
             placeholder="Enter city name"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
+          />
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
           />
           <button type="submit">Search</button>
         </form>
