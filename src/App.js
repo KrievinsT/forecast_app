@@ -11,6 +11,7 @@ function App() {
   const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
 
   const fetchData = () => {
+    if (!location) return;
     return fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -26,6 +27,7 @@ function App() {
   };
 
   const fetchDataFor = () => {
+    if (!location) return;
     return fetch(urlFor)
       .then((response) => {
         if (!response.ok) {
@@ -40,8 +42,12 @@ function App() {
       .catch(handleError);
   };
 
-  const handleSubmit = (e) => {  {/* Trigger search without page reload */}
+  const handleSubmit = (e) => {  
     e.preventDefault();
+    if (!location) {
+      setError(new Error('Please enter a city name'));
+      return;
+    }
     fetchData();
   };
 
@@ -50,13 +56,17 @@ function App() {
     console.error('Error:', error); 
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => { {/* uncomment if need to display cities without submiting */}
+  //   if (location) {
+  //     fetchData();
+  //   }
+  // }, [location]);
 
-  useEffect(() => {
-    fetchDataFor();
-  }, []);
+  // useEffect(() => {
+  //   if (location) {
+  //     fetchDataFor();
+  //   }
+  // }, [location]);
 
   return (
     <div className="App">
@@ -71,7 +81,7 @@ function App() {
           />
           <button type="submit">Search</button>
         </form>
-        {!error && (
+        {!error && data.current && (
           <div 
             onClick={() => setIsFahrenheit(!isFahrenheit)} 
             style={{ cursor: 'pointer' }}
@@ -85,7 +95,7 @@ function App() {
             <h2>City: {data.location.name}</h2>
             <p>Temperature: {isFahrenheit ? data.current.temp_f : data.current.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>  {/* Unit conversion */}
             <p>Condition: {data.current.condition.text}</p>
-            <img src={data.current.condition.icon}></img>
+            <img src={data.current.condition.icon} alt="Weather Icon"></img>
           </div>
         )}
         <p>Powered by WeatherAPI</p>
