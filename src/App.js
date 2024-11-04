@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [data, setData] = useState([]);
-  const [dataFor, setDataFor] = useState([]);
+  const [dataFor, setDataFor] = useState(null);
   const [error, setError] = useState(null);
   const [location, setLocation] = useState("");
   const [isFahrenheit, setIsFahrenheit] = useState(false);
@@ -38,6 +38,7 @@ function App() {
         return response.json();
       })
       .then((dataFor) => {
+        console.log('Forecast data:', dataFor);
         setDataFor(dataFor);
         setError(null);
       })
@@ -59,18 +60,6 @@ function App() {
     console.error('Error:', error); 
   };
 
-  // useEffect(() => { {/* uncomment if need to display cities without submiting */}
-  //   if (location) {
-  //     fetchData();
-  //   }
-  // }, [location]);
-
-  // useEffect(() => {
-  //   if (location) {
-  //     fetchDataFor();
-  //   }
-  // }, [location]);
-
   return (
     <div className="App">
       <header className="App-header">
@@ -89,7 +78,7 @@ function App() {
             onClick={() => setIsFahrenheit(!isFahrenheit)} 
             style={{ cursor: 'pointer' }}
           >
-            Display in {isFahrenheit ? 'Celsius' : 'Fahrenheit'}  {/* Unit conversion trigger for degree */}
+            Display in {isFahrenheit ? 'Celsius' : 'Fahrenheit'}
           </div>
         )}
         {!error && data.current && (
@@ -97,10 +86,10 @@ function App() {
             onClick={() => setIsMPH(!isMPH)} 
             style={{ cursor: 'pointer' }}
           >
-            Display in {isMPH ? 'Kilometers' : 'Miles'}  {/* Unit conversion trigger for speed */}
+            Display in {isMPH ? 'Kilometers' : 'Miles'}
           </div>
         )}
-        {error && <p className="error-message">{error.message}</p>} {/* Display error message to user */}
+        {error && <p className="error-message">{error.message}</p>}
         {data.current && !error && (
           <div>
             <h2>City: {data.location.name}</h2>
@@ -112,6 +101,16 @@ function App() {
             <p>Condition: {data.current.condition.text}</p>
             <img src={data.current.condition.icon} alt="Weather Icon"></img>
             <p>UV index: {data.current.uv}</p>
+          </div>
+        )}
+        {dataFor && !error && (
+          <div>
+            <h2>Forecast for {dataFor.forecast.forecastday[0].date}</h2>
+            <p>Avg Temperature: {isFahrenheit ? dataFor.forecast.forecastday[0].day.avgtemp_f : dataFor.forecast.forecastday[0].day.avgtemp_c}°{isFahrenheit ? 'F' : 'C'}</p>
+            <p>Max Temperature: {isFahrenheit ? dataFor.forecast.forecastday[0].day.maxtemp_f : dataFor.forecast.forecastday[0].day.maxtemp_c}°{isFahrenheit ? 'F' : 'C'}</p>
+            <p>Min Temperature: {isFahrenheit ? dataFor.forecast.forecastday[0].day.mintemp_f : dataFor.forecast.forecastday[0].day.mintemp_c}°{isFahrenheit ? 'F' : 'C'}</p>
+            <p>Condition: {dataFor.forecast.forecastday[0].day.condition.text}</p>
+            <img src={dataFor.forecast.forecastday[0].day.condition.icon} alt="Weather Icon"></img>
           </div>
         )}
         <p>Powered by WeatherAPI</p>
