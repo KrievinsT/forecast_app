@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 function App() {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
-  const [location, setLocation] = useState("Britain")
+  const [location, setLocation] = useState("")
 
-  const url = "http://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=" + location;
-  const urlFor = "http://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=" + location;
+  const url = "https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=" + location;
+  const urlFor = "https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=" + location;
 
   const fetchData = () => {
     return fetch(url)
@@ -46,6 +46,7 @@ function App() {
           <form onSubmit={handleSubmit}>
             <input
               type="text"
+              placeholder='Enter city name'
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
