@@ -5,10 +5,37 @@ function App() {
   const [data, setData] = useState([]);
   const [dataFor, setDataFor] = useState(null);
   const [error, setError] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [isFahrenheit, setIsFahrenheit] = useState(false);
   const [isMPH, setIsMPH] = useState(false);
+
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords;
+        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+          .then(response => response.json())
+          .then(data => {
+            setUserLocation(data.city || data.locality || data.principalSubdivision);
+            setLocation(data.city || data.locality || data.principalSubdivision);
+          })
+          .catch(error => {
+            console.error('Error fetching city name:', error);
+          });
+      },
+      error => {
+        console.error('Error getting location', error);
+      });
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  };
+
+  useEffect(() => {
+    getUserLocation();
+  }, []);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
   const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
@@ -16,13 +43,13 @@ function App() {
   const fetchData = () => {
     if (!location) return;
     return fetch(url)
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
           throw new Error('City not found or doesn’t exist');
         }
         return response.json();
       })
-      .then((data) => {
+      .then(data => {
         setData(data);
         setError(null);
       })
@@ -30,15 +57,15 @@ function App() {
   };
 
   const fetchDataFor = () => {
-    if (!location) return;
+    if (!location || !date) return;
     return fetch(urlFor)
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
           throw new Error('City not found or doesn’t exist');
         }
         return response.json();
       })
-      .then((dataFor) => {
+      .then(dataFor => {
         console.log('Forecast data:', dataFor);
         setDataFor(dataFor);
         setError(null);
@@ -133,7 +160,7 @@ function App() {
         {dataFor && !error && (
           <div>
             <p>Date: {dataFor.forecast.forecastday[0].date}</p>
-            <div style={{ overflowY: 'scrollable', overflowX: 'hidden', height: '400px' }}>
+            <div style={{ overflowY: 'scroll', overflowX: 'hidden', height: '400px' }}>
               {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
                 <div key={index}>
                   <p>Time: {hourData.time}</p>
