@@ -25,9 +25,9 @@ function App() {
             console.error('Error fetching city name:', error);
           });
       },
-      error => {
-        console.error('Error getting location', error);
-      });
+        error => {
+          console.error('Error getting location', error);
+        });
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
@@ -36,6 +36,12 @@ function App() {
   useEffect(() => {
     getUserLocation();
   }, []);
+
+  useEffect(() => {
+    if (location) {
+      fetchData(); fetchDataFor();
+    }
+  }, [location]);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
   const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
