@@ -85,6 +85,7 @@ function App() {
             <h2>City: {data.location.name}</h2>
             <p>Temperature: {isFahrenheit ? data.current.temp_f : data.current.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>  {/* Unit conversion */}
             <p>Condition: {data.current.condition.text}</p>
+            <img src={data.current.condition.icon}></img>
           </div>
         )}
         <p>Powered by WeatherAPI</p>
