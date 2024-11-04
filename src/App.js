@@ -1,9 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
 
 function App() {
-  const url = "http://api.weatherapi.com/v1/key=1f8a5c56a5744e389e741625240111";
+  const url = "http://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111";
   const [data, setData] = useState([]);
 
   const fetchData = () => {
@@ -19,18 +18,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Weather App</h1>
+        {data.current && (
+          <div>
+            <h2>Location: {data.location.name}</h2>
+            <p>Temperature: {data.current.temp_c}°C</p>
+            <p>Condition: {data.current.condition.text}</p>
+          </div>
+        )}
+        <p>Powered by WeatherAPI</p>
       </header>
     </div>
   );
