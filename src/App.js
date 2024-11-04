@@ -111,6 +111,16 @@ function App() {
             <p>Min Temperature: {isFahrenheit ? dataFor.forecast.forecastday[0].day.mintemp_f : dataFor.forecast.forecastday[0].day.mintemp_c}°{isFahrenheit ? 'F' : 'C'}</p>
             <p>Condition: {dataFor.forecast.forecastday[0].day.condition.text}</p>
             <img src={dataFor.forecast.forecastday[0].day.condition.icon} alt="Weather Icon"></img>
+            <p>Chance to rain: {dataFor.forecast.forecastday[0].day.daily_chance_of_rain}%</p>
+            <p>Chance to snow: {dataFor.forecast.forecastday[0].day.daily_chance_of_snow}%</p>
+          </div>
+        )}
+        {dataFor && !error &&(
+          <div>
+            <p>Sunrise: {dataFor.forecast.forecastday[0].astro.sunrise}</p>
+            <p>Sunset: {dataFor.forecast.forecastday[0].astro.sunset}</p>
+            <p>Moonrise: {dataFor.forecast.forecastday[0].astro.moonrise}</p>
+            <p>Moonset: {dataFor.forecast.forecastday[0].astro.moonset}</p>
           </div>
         )}
         <p>Powered by WeatherAPI</p>
