@@ -45,7 +45,7 @@ function App() {
       .catch(handleError);
   };
 
-  const handleSubmit = (e) => {  
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!location) {
       setError(new Error('Please enter a city name'));
@@ -57,7 +57,7 @@ function App() {
 
   const handleError = (error) => {
     setError(error);
-    console.error('Error:', error); 
+    console.error('Error:', error);
   };
 
   return (
@@ -74,16 +74,16 @@ function App() {
           <button type="submit">Search</button>
         </form>
         {!error && data.current && (
-          <div 
-            onClick={() => setIsFahrenheit(!isFahrenheit)} 
+          <div
+            onClick={() => setIsFahrenheit(!isFahrenheit)}
             style={{ cursor: 'pointer' }}
           >
             Display in {isFahrenheit ? 'Celsius' : 'Fahrenheit'}
           </div>
         )}
         {!error && data.current && (
-          <div 
-            onClick={() => setIsMPH(!isMPH)} 
+          <div
+            onClick={() => setIsMPH(!isMPH)}
             style={{ cursor: 'pointer' }}
           >
             Display in {isMPH ? 'Kilometers' : 'Miles'}
@@ -115,12 +115,29 @@ function App() {
             <p>Chance to snow: {dataFor.forecast.forecastday[0].day.daily_chance_of_snow}%</p>
           </div>
         )}
-        {dataFor && !error &&(
+        {dataFor && !error && (
           <div>
             <p>Sunrise: {dataFor.forecast.forecastday[0].astro.sunrise}</p>
             <p>Sunset: {dataFor.forecast.forecastday[0].astro.sunset}</p>
             <p>Moonrise: {dataFor.forecast.forecastday[0].astro.moonrise}</p>
             <p>Moonset: {dataFor.forecast.forecastday[0].astro.moonset}</p>
+            <p>Moon phase: {dataFor.forecast.forecastday[0].astro.moon_phase}</p>
+          </div>
+        )}
+        {dataFor && !error && (
+          <div>
+            <p>Date: {dataFor.forecast.forecastday[0].date}</p>
+            <div style={{ overflowY: 'scrollable', overflowX: 'hidden', height: '400px' }}>
+              {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
+                <div key={index}>
+                  <p>Time: {hourData.time}</p>
+                  <p>Temperature: {isFahrenheit ? hourData.temp_f : hourData.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
+                  <p>Condition: {hourData.condition.text}</p>
+                  <img src={hourData.condition.icon} alt="Weather Icon"></img>
+                  <p>___________________</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
         <p>Powered by WeatherAPI</p>
