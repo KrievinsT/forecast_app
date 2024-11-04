@@ -2,9 +2,11 @@ import './App.css';
 import { useEffect, useState } from 'react';
 
 function App() {
-  const location = "Britain";
-  const url = "http://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=" + location;
   const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [location, setLocation] = useState("Britain")
+
+  const url = "http://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=" + location;
 
   const fetchData = () => {
     return fetch(url)
