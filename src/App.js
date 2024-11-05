@@ -53,14 +53,8 @@ function App() {
   };
 
   const getDefraBand = (value) => {
-    if (value <= 11) return 'Low';
-    if (value <= 23) return 'Low';
     if (value <= 35) return 'Low';
-    if (value <= 41) return 'Moderate';
-    if (value <= 47) return 'Moderate';
     if (value <= 53) return 'Moderate';
-    if (value <= 58) return 'High';
-    if (value <= 64) return 'High';
     if (value <= 70) return 'High';
     return 'Very High';
   };
@@ -167,7 +161,7 @@ function App() {
               </div>
             )}
             <img src={data.current.condition.icon} alt="Weather Icon"></img>
-            <p>UV index: {data.current.uv}</p>
+            <p>UV strenght: {data.current.uv}</p>
           </div>
         )}
         {dataFor && !error && (
