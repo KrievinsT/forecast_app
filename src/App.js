@@ -146,7 +146,7 @@ function App() {
             <p>Current humidity: {data.current.humidity}%</p>
             <p>Condition: {data.current.condition.text}</p>
             <p>Current pressure: {data.current.pressure_in + ' in'}</p>
-            <p>Current pressure: {data.current.pressure_mb} mb</p>
+            <p>Current pressure: {data.current.pressure_mb}°</p>
             {data.current.air_quality && (
               <div>
                 <h3>Air polution: {getDefraBand(data.current.air_quality["gb-defra-index"])}</h3>
@@ -194,6 +194,8 @@ function App() {
                   <p>Visibility: {isMPH ? hourData.vis_miles + ' mi' : hourData.vis_km + ' km'}</p>
                   <p>Temperature: {isFahrenheit ? hourData.temp_f : hourData.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
                   <p>Condition: {hourData.condition.text}</p>
+                  <p>Wind: {isMPH ? hourData.wind_mph + ' mi' : hourData.wind_kph + ' km'} per hour</p>
+                  <p>Humidity: {hourData.humidity}%</p>
                   <img src={hourData.condition.icon} alt="Weather Icon"></img>
                   <p>___________________</p>
                 </div>
