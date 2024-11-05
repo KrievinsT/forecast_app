@@ -52,6 +52,19 @@ function App() {
     // console.error('Error:', error);
   };
 
+  const getDefraBand = (value) => {
+    if (value <= 11) return 'Low';
+    if (value <= 23) return 'Low';
+    if (value <= 35) return 'Low';
+    if (value <= 41) return 'Moderate';
+    if (value <= 47) return 'Moderate';
+    if (value <= 53) return 'Moderate';
+    if (value <= 58) return 'High';
+    if (value <= 64) return 'High';
+    if (value <= 70) return 'High';
+    return 'Very High';
+  };
+
   const fetchData = () => {
     if (!location) return;
     return fetch(url)
@@ -102,12 +115,12 @@ function App() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
-          <input 
-            type="date" 
-            value={date} 
+          <input
+            type="date"
+            value={date}
             max={maxDate}
             min={minDate}
-            onChange={(e) => setDate(e.target.value)} 
+            onChange={(e) => setDate(e.target.value)}
           />
         </form>
         {!error && data.current && (
@@ -137,8 +150,20 @@ function App() {
             <p>Current humidity: {data.current.humidity}%</p>
             <p>Condition: {data.current.condition.text}</p>
             <p>Current pressure: {data.current.pressure_in + ' in'}</p>
-            <p>Current pressure: {data.current.pressure_mb}°</p>
-            <p>Air quality index: {data.current.air_quality["gb-defra-index"]}</p>
+            <p>Current pressure: {data.current.pressure_mb} mb</p>
+            {data.current.air_quality && (
+              <div>
+                <h3>Air polution: {getDefraBand(data.current.air_quality["gb-defra-index"])}</h3>
+                <div>
+                  <p>PM2.5: {data.current.air_quality.pm2_5} µg/m³</p>
+                  <p>PM10: {data.current.air_quality.pm10} µg/m³</p>
+                  <p>NO2: {data.current.air_quality.no2} µg/m³</p>
+                  <p>SO2: {data.current.air_quality.so2} µg/m³</p>
+                  <p>CO: {data.current.air_quality.co} µg/m³</p>
+                  <p>O3: {data.current.air_quality.o3} µg/m³</p>
+                </div>
+              </div>
+            )}
             <img src={data.current.condition.icon} alt="Weather Icon"></img>
             <p>UV index: {data.current.uv}</p>
           </div>
