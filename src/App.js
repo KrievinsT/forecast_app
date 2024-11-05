@@ -145,6 +145,7 @@ function App() {
             <p>Current wind direction: {data.current.wind_dir}</p>
             <p>Current humidity: {data.current.humidity}%</p>
             <p>Condition: {data.current.condition.text}</p>
+            <img src={data.current.condition.icon} alt="Weather Icon"></img>
             <p>Current pressure: {data.current.pressure_in + ' in'}</p>
             <p>Current pressure: {data.current.pressure_mb}°</p>
             {data.current.air_quality && (
@@ -160,7 +161,6 @@ function App() {
                 </div>
               </div>
             )}
-            <img src={data.current.condition.icon} alt="Weather Icon"></img>
             <p>UV strenght: {data.current.uv}</p>
           </div>
         )}
