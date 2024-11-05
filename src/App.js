@@ -196,6 +196,7 @@ function App() {
               {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
                 <div key={index}>
                   <p>Time: {hourData.time}</p>
+                  <p>Visibility {isMPH ? hourData.vis_miles + ' mi' : hourData.vis_km + ' km'}</p>
                   <p>Temperature: {isFahrenheit ? hourData.temp_f : hourData.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
                   <p>Condition: {hourData.condition.text}</p>
                   <img src={hourData.condition.icon} alt="Weather Icon"></img>
