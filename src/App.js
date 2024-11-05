@@ -163,7 +163,7 @@ function App() {
         )}
         {dataFor && !error && (
           <div>
-            <p>Date: {dataFor.forecast.forecastday[0].date}</p>
+            {/* <p>Date: {dataFor.forecast.forecastday[0].date}</p> */}
             <div style={{ overflowY: 'scroll', overflowX: 'hidden', height: '400px' }}>
               {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
                 <div key={index}>
