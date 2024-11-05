@@ -49,7 +49,7 @@ function App() {
 
   const handleError = (error) => {
     setError(error);
-    console.error('Error:', error);
+    // console.error('Error:', error);
   };
 
   const fetchData = () => {
@@ -130,11 +130,11 @@ function App() {
         {data.current && !error && (
           <div>
             <h2>City: {data.location.name}</h2>
-            <p>Temperature: {isFahrenheit ? data.current.temp_f : data.current.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
+            <p>Current temperature: {isFahrenheit ? data.current.temp_f : data.current.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
             <p>Actual feel: {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°{isFahrenheit ? 'F' : 'C'}</p>
-            <p>Wind speed: {isMPH ? data.current.wind_mph + ' miles' : data.current.wind_kph + ' kilometers'} per hour</p>
-            <p>Wind direction: {data.current.wind_dir}</p>
-            <p>Humidity: {data.current.humidity}%</p>
+            <p>Current wind speed: {isMPH ? data.current.wind_mph + ' miles' : data.current.wind_kph + ' kilometers'} per hour</p>
+            <p>Current wind direction: {data.current.wind_dir}</p>
+            <p>Current humidity: {data.current.humidity}%</p>
             <p>Condition: {data.current.condition.text}</p>
             <img src={data.current.condition.icon} alt="Weather Icon"></img>
             <p>UV index: {data.current.uv}</p>
