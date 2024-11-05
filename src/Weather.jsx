@@ -4,6 +4,22 @@ import { useState } from "react";
 function Weather() {
   const [selectedButton, setSelectedButton] = useState("Today");
 
+  const forecastData = [
+    { time: "1AM", description: "Mostly Cloudy", temperature: "12°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers very much", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+  ];
 
 
   return (
@@ -127,7 +143,7 @@ function Weather() {
 
 
 <div className="flex max-w-[100%] mx-auto">
-  <div className="w-[70%] bg-gray-100 pe-8">
+  <div className="w-[60%] bg-gray-100 pe-8">
     {/* Current Weather */}
     <section className="bg-white p-6 rounded-lg shadow-md mb-6">
   <div className="flex justify-between">
@@ -137,7 +153,10 @@ function Weather() {
       <div className="text-lg font-medium text-black-700">2:59PM</div>
       <div className="flex items-center">
           {/* Current tempeture*/}
-  <div className="text-5xl font-semibold text-black mr-2">12°F</div>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-500">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
+    </svg>
+  <div className="text-5xl font-semibold text-black mr-2 pl-3">12°F</div>
   <div className="flex flex-col text-sm text-gray-500 pl-6">
       {/* Current condition*/}
     <div>Rainy</div>
@@ -285,7 +304,7 @@ function Weather() {
                 d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
               />
             </svg>
-            <div className="text-gray-500 text-sm">Sunrise</div>
+            <div className="text-gray-500 text-sm">Sunset</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
          </div>
       </div>
@@ -294,8 +313,8 @@ function Weather() {
 
          <div className="flex justify-between items-center pt-12">
          <div className="flex items-center ">
-         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-12 text-gray-700">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-12 text-gray-700">
+          <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clipRule="evenodd" />
         </svg>
         <div className="flex flex-col text-sm text-gray-500 pl-5">
         <div>Air Quality</div>
@@ -304,21 +323,10 @@ function Weather() {
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex flex-col items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 text-gray-700 mb-1"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-              />
-            </svg>
-            <div className="text-gray-500 text-sm">Sunrise</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5  text-gray-700 mb-1">
+          <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clipRule="evenodd" />
+        </svg>
+            <div className="text-gray-500 text-sm">Moonrise</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
           </div>
 
@@ -342,21 +350,10 @@ function Weather() {
         </svg>
       </div>
       <div className="flex flex-col items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 text-gray-700 mb-1"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-              />
-            </svg>
-            <div className="text-gray-500 text-sm">Sunrise</div>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5  text-gray-700 mb-1">
+          <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clipRule="evenodd" />
+        </svg>
+            <div className="text-gray-500 text-sm">Moonset</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
          </div>
       </div>
@@ -364,76 +361,104 @@ function Weather() {
         </section>
       </div>
 
-  <div className="w-[30%] bg-white p-6 rounded-lg shadow-md ">
+      <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md">
   <div className="flex justify-start items-center mb-4">
-    
-        <div className="flex space-x-4">
-        <button
-            onClick={() => setSelectedButton("Today")}
-            className={`pb-1 ${
-              selectedButton === "Today"
-                ? "text-black border-b-2 border-black font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            Today
-          </button>
-          <button
-            onClick={() => setSelectedButton("Tomorrow")}
-            className={`pb-1 ${
-              selectedButton === "Tomorrow"
-                ? "text-black border-b-2 border-black font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            Tomorrow
-          </button>
-          <button
-            onClick={() => setSelectedButton("10 Days")}
-            className={`pb-1 ${
-              selectedButton === "10 Days"
-                ? "text-black border-b-2 border-black font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            10 Days
-          </button>
+    <div className="flex space-x-4">
+      <button
+        onClick={() => setSelectedButton("Today")}
+        className={`pb-1 ${
+          selectedButton === "Today"
+            ? "text-black border-b-2 border-black font-semibold"
+            : "text-gray-500"
+        }`}
+      >
+        Today
+      </button>
+      <button
+        onClick={() => setSelectedButton("Tomorrow")}
+        className={`pb-1 ${
+          selectedButton === "Tomorrow"
+            ? "text-black border-b-2 border-black font-semibold"
+            : "text-gray-500"
+        }`}
+      >
+        Tomorrow
+      </button>
+      <button
+        onClick={() => setSelectedButton("10 Days")}
+        className={`pb-1 ${
+          selectedButton === "10 Days"
+            ? "text-black border-b-2 border-black font-semibold"
+            : "text-gray-500"
+        }`}
+      >
+        10 Days
+      </button>
+      <button
+        onClick={() => setSelectedButton("Monthly")}
+        className={`pb-1 ${
+          selectedButton === "Monthly"
+            ? "text-black border-b-2 border-black font-semibold"
+            : "text-gray-500"
+        }`}
+      >
+        Monthly
+      </button>
+    </div>
+  </div>
+  {/* md:h-[calc(9*5.2rem)] */}
+  <div className="relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2">
+  {forecastData.map((item, index) => (
+    <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2">
+      <div className="flex items-center space-x-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="w-12 h-12 text-gray-500"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"
+          />
+        </svg>
+        <div className="flex flex-col items-start">
+          <span className="text-sm font-semibold text-gray-700">{item.time}</span>
+          <span className="font-semibold text-gray-700">{item.description}</span>
         </div>
       </div>
-      <div className="space-y-4">
-  {/* Forecast items */}
-  <div className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2">
-  <div className="flex items-center space-x-2">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
-    </svg>
-    <div className="flex flex-col items-start">
-      <span className="text-sm font-semibold text-gray-700">1AM</span>
-      <span className="text-gray-500">Mostly Cloudy</span>
-    </div>
-  </div>
-  
-  <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
-  <div className="text-lg text-gray-700">12°</div>
-</div>
 
-  {/* Additional forecast items */}
-  <div className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2">
-    <div className="flex items-center space-x-2">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
-    </svg>
-      <span className="text-sm font-semibold text-gray-700">2AM</span>
-      <span className="text-gray-500">Rain Showers</span>
+      <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
+
+      <div className="flex items-center space-x-2">
+        <div className="text-lg text-gray-800">{item.temperature}</div>
+        <div className="flex flex-col items-start">
+          <span className="text-gray-800">Wind: {item.wind}</span>
+          <span className="text-gray-800">Humidity: {item.humidity}</span>
+        </div>
+      </div>
     </div>
-  
-    <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
-    <div className="text-lg text-gray-700">14°</div>
-  </div>
+  ))}
 </div>
 
 
+
+  <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      className="w-7 h-7 text-gray-500"
+    >
+      <path d="M12 16l-6-6h12l-6 6z" />
+    </svg>
   </div>
+</div>
+
+ 
 </div>
 
 
