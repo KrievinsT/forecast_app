@@ -44,11 +44,13 @@ function App() {
     setMinDate(minDate.toISOString().split('T')[0]);
   }, []);
 
-  useEffect(() => {
-    if (location && date) {
-      fetchData(); fetchDataFor();
-    }
-  }, [location, date]);
+  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
+  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
+
+  const handleError = (error) => {
+    setError(error);
+    console.error('Error:', error);
+  };
 
   const fetchData = () => {
     if (!location) return;
@@ -83,13 +85,11 @@ function App() {
       .catch(handleError);
   };
 
-  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
-  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
-
-  const handleError = (error) => {
-    setError(error);
-    console.error('Error:', error);
-  };
+  useEffect(() => {
+    if (location && date) {
+      fetchData(); fetchDataFor();
+    }
+  }, [location, date]);
 
   return (
     <div className="App">
