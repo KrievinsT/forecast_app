@@ -9,6 +9,7 @@ function App() {
   const [date, setDate] = useState("");
   const [isFahrenheit, setIsFahrenheit] = useState(false);
   const [isMPH, setIsMPH] = useState(false);
+  const [maxDate, setMaxDate] = useState("");
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -30,6 +31,22 @@ function App() {
       console.error('Geolocation is not supported by this browser.');
     }
   };
+
+  useEffect(() => {
+    getUserLocation();
+    setDate(new Date().toISOString().split('T')[0]);
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 15);
+    setMaxDate(maxDate.toISOString().split('T')[0]);
+  }, []);
+
+
+  useEffect(() => {
+    if (location) {
+      fetchData();
+      fetchDataFor();
+    }
+  }, [location, date]);
 
   const fetchData = () => {
     if (!location) return;
@@ -64,13 +81,6 @@ function App() {
       .catch(handleError);
   };
 
-  
-
-  useEffect(() => { 
-    const currentDate = new Date().toISOString().split('T')[0]; 
-    setDate(currentDate); getUserLocation(); 
-  }, []);
-
   useEffect(() => {
     if (location && date) {
       fetchData(); fetchDataFor();
@@ -96,10 +106,11 @@ function App() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+          <input 
+            type="date" 
+            value={date} 
+            max={maxDate} 
+            onChange={(e) => setDate(e.target.value)} 
           />
         </form>
         {!error && data.current && (
