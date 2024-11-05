@@ -196,6 +196,8 @@ function App() {
                   <p>Condition: {hourData.condition.text}</p>
                   <p>Wind: {isMPH ? hourData.wind_mph + ' mi' : hourData.wind_kph + ' km'} per hour</p>
                   <p>Humidity: {hourData.humidity}%</p>
+                  <p>Chance to rain: {hourData.chance_of_rain}%</p>
+                  <p>Chance to snow: {hourData.chance_of_snow}%</p>
                   <img src={hourData.condition.icon} alt="Weather Icon"></img>
                   <p>___________________</p>
                 </div>
