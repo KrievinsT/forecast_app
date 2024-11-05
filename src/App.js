@@ -5,7 +5,6 @@ function App() {
   const [data, setData] = useState([]);
   const [dataFor, setDataFor] = useState(null);
   const [error, setError] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [isFahrenheit, setIsFahrenheit] = useState(false);
@@ -18,7 +17,6 @@ function App() {
         fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
           .then(response => response.json())
           .then(data => {
-            setUserLocation(data.city || data.locality || data.principalSubdivision);
             setLocation(data.city || data.locality || data.principalSubdivision);
           })
           .catch(error => {
@@ -32,19 +30,6 @@ function App() {
       console.error('Geolocation is not supported by this browser.');
     }
   };
-
-  useEffect(() => {
-    getUserLocation();
-  }, []);
-
-  useEffect(() => {
-    if (location) {
-      fetchData(); fetchDataFor();
-    }
-  }, [location]);
-
-  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
-  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
 
   const fetchData = () => {
     if (!location) return;
@@ -79,15 +64,21 @@ function App() {
       .catch(handleError);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!location) {
-      setError(new Error('Please enter a city name'));
-      return;
+  
+
+  useEffect(() => { 
+    const currentDate = new Date().toISOString().split('T')[0]; 
+    setDate(currentDate); getUserLocation(); 
+  }, []);
+
+  useEffect(() => {
+    if (location && date) {
+      fetchData(); fetchDataFor();
     }
-    fetchData();
-    fetchDataFor();
-  };
+  }, [location, date]);
+
+  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
+  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
 
   const handleError = (error) => {
     setError(error);
@@ -98,7 +89,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Weather App</h1>
-        <form onSubmit={handleSubmit}>
+        <form>
           <input
             type="text"
             placeholder="Enter city name"
@@ -110,7 +101,6 @@ function App() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
-          <button type="submit">Search</button>
         </form>
         {!error && data.current && (
           <div
