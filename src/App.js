@@ -143,6 +143,8 @@ function App() {
         {data.current && !error && (
           <div>
             <h2>City: {data.location.name}</h2>
+            <p>Last updated: {data.current.last_updated}</p>
+            <p>Current time: {data.location.localtime}</p>
             <p>Current temperature: {isFahrenheit ? data.current.temp_f : data.current.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
             <p>Actual feel: {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°{isFahrenheit ? 'F' : 'C'}</p>
             <p>Current wind speed: {isMPH ? data.current.wind_mph + ' miles' : data.current.wind_kph + ' kilometers'} per hour</p>
