@@ -40,11 +40,9 @@ function App() {
     setMaxDate(maxDate.toISOString().split('T')[0]);
   }, []);
 
-
   useEffect(() => {
-    if (location) {
-      fetchData();
-      fetchDataFor();
+    if (location && date) {
+      fetchData(); fetchDataFor();
     }
   }, [location, date]);
 
@@ -80,12 +78,6 @@ function App() {
       })
       .catch(handleError);
   };
-
-  useEffect(() => {
-    if (location && date) {
-      fetchData(); fetchDataFor();
-    }
-  }, [location, date]);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
   const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
