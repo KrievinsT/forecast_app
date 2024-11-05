@@ -10,6 +10,7 @@ function App() {
   const [isFahrenheit, setIsFahrenheit] = useState(false);
   const [isMPH, setIsMPH] = useState(false);
   const [maxDate, setMaxDate] = useState("");
+  const [minDate, setMinDate] = useState("");
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -38,6 +39,9 @@ function App() {
     const maxDate = new Date();
     maxDate.setDate(maxDate.getDate() + 15);
     setMaxDate(maxDate.toISOString().split('T')[0]);
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() - 3);
+    setMinDate(minDate.toISOString().split('T')[0]);
   }, []);
 
   useEffect(() => {
@@ -101,7 +105,8 @@ function App() {
           <input 
             type="date" 
             value={date} 
-            max={maxDate} 
+            max={maxDate}
+            min={minDate}
             onChange={(e) => setDate(e.target.value)} 
           />
         </form>
