@@ -44,8 +44,8 @@ function App() {
     setMinDate(minDate.toISOString().split('T')[0]);
   }, []);
 
-  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
-  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
+  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
+  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}&aqi=yes`;
 
   const handleError = (error) => {
     setError(error);
@@ -136,6 +136,9 @@ function App() {
             <p>Current wind direction: {data.current.wind_dir}</p>
             <p>Current humidity: {data.current.humidity}%</p>
             <p>Condition: {data.current.condition.text}</p>
+            <p>Current pressure: {data.current.pressure_in + ' in'}</p>
+            <p>Current pressure: {data.current.pressure_mb}°</p>
+            <p>Air quality index: {data.current.air_quality["gb-defra-index"]}</p>
             <img src={data.current.condition.icon} alt="Weather Icon"></img>
             <p>UV index: {data.current.uv}</p>
           </div>
