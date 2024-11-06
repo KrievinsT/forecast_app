@@ -121,27 +121,9 @@ function Weather() {
         </button>
         <h1 className="text-2xl font-semibold text-blue-500 mr-3 cursor-pointer">SkyCast</h1> 
 
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6 ml-4 md:ml-6 lg:ml-8 xl:ml-14 hidden 890px:block"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-            />
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-            />
-        </svg>
+        <img src="./images/google-maps.gif" alt="Description of the image"  className="w-6 h-6 ml-4 md:ml-6 lg:ml-8 xl:ml-14 hidden 890px:block"/>
 
-        <span className="text-gray-500 ml-1 hidden 890px:block">Khulna, Bangladesh</span> 
+        <span className="text-gray-800 ml-1 hidden 890px:block">Khulna, Bangladesh</span> 
     </div>
     <div className="flex items-center space-x-4">
         <div className="relative flex items-center">
@@ -257,45 +239,35 @@ function Weather() {
     <section className="grid grid-cols-2 gap-6 lg:grid-cols-3 mb-6">
         <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 text-gray-500">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
-        </svg>
+      <img src="./images/clouds.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-500">Air Quality</span>
       </div>
       <span className="text-2xl font-semibold ml-7">156</span>
     </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"  viewBox="0 0 16 16"  className="size-5 bi bi-wind">
-        <path d="M12.5 2A2.5 2.5 0 0 0 10 4.5a.5.5 0 0 1-1 0A3.5 3.5 0 1 1 12.5 8H.5a.5.5 0 0 1 0-1h12a2.5 2.5 0 0 0 0-5m-7 1a1 1 0 0 0-1 1 .5.5 0 0 1-1 0 2 2 0 1 1 2 2h-5a.5.5 0 0 1 0-1h5a1 1 0 0 0 0-2M0 9.5A.5.5 0 0 1 .5 9h10.042a3 3 0 1 1-3 3 .5.5 0 0 1 1 0 2 2 0 1 0 2-2H.5a.5.5 0 0 1-.5-.5"/>
-      </svg>
+      <img src="./images/wind.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-500">Wind</span>
         </div>
         <span className="text-2xl font-semibold ml-7">1 mph</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
-      <img src="./images/humidity-icon.svg" alt="Description of the image"  className="size-5"/>
+      <img src="./images/humidity.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-500">Humidity</span>
         </div>
         <span className="text-2xl font-semibold ml-7">54%</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-          </svg>
+      <img src="./images/vision.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-500">Visibility</span>
         </div>
         <span className="text-2xl font-semibold ml-7">3 mi</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-          </svg>
+      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-500">Pressure</span>
         </div>
         <span className="text-2xl font-semibold ml-7">27.65 in</span>
@@ -398,9 +370,8 @@ function Weather() {
          </div>
          <div className="flex flex-col xsm:flex-row justify-between items-start">
          <div className="flex items-center ">
-         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-12 text-gray-700">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-        </svg>
+         
+        <img src="./images/sun.gif" alt="Description of the image"  className="size-12"/>
         <div className="flex flex-col text-sm text-gray-500 pl-5">
         <div>Air Quality</div>
         <span className="text-xl font-semibold text-black">156</span>
@@ -409,20 +380,7 @@ function Weather() {
         <div className="flex items-center space-x-4">
            <div className="flex items-center space-x-4 pt-4 xsm:pt-0">
           <div className="flex flex-col items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 text-gray-700 mb-1"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-              />
-            </svg>
+          <img src="./images/field.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
             <div className="text-gray-500 text-sm">Sunrise</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
           </div>
@@ -447,20 +405,8 @@ function Weather() {
         </svg>
       </div>
       <div className="flex flex-col items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 text-gray-700 mb-1"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-              />
-            </svg>
+                
+            <img src="./images/sunset.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
             <div className="text-gray-500 text-sm">Sunset</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
          </div>
@@ -470,9 +416,7 @@ function Weather() {
          </div>
          <div className="flex flex-col xsm:flex-row justify-between items-start pt-12">
          <div className="flex items-center ">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-12 text-gray-700">
-          <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clipRule="evenodd" />
-        </svg>
+         <img src="./images/moon.gif" alt="Description of the image"  className="size-12"/>
         <div className="flex flex-col text-sm text-gray-500 pl-5">
         <div>Air Quality</div>
         <span className="text-xl font-semibold text-black">156</span>
@@ -481,9 +425,7 @@ function Weather() {
         <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-4 pt-6 xsm:pt-0">
           <div className="flex flex-col items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5  text-gray-700 mb-1">
-          <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clipRule="evenodd" />
-        </svg>
+          <img src="./images/moon-rise.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
             <div className="text-gray-500 text-sm">Moonrise</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
           </div>
@@ -508,9 +450,7 @@ function Weather() {
         </svg>
       </div>
       <div className="flex flex-col items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5  text-gray-700 mb-1">
-          <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clipRule="evenodd" />
-        </svg>
+      <img src="./images/moon-set.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
             <div className="text-gray-500 text-sm">Moonset</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
          </div>
@@ -580,7 +520,7 @@ function Weather() {
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
       {forecastData.map((item, index) => (
-        <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2">
+        <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
           <div className="flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
