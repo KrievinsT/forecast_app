@@ -205,7 +205,7 @@ function Weather() {
     <section className="bg-white p-6 rounded-lg shadow-md mb-6">
   <div className="flex justify-between">
     <div>
-      <div className="text-sm text-gray-500">Current Weather</div>
+      <div className="text-sm text-gray-800">Current Weather</div>
         {/* Current time*/}
       <div className="text-lg font-medium text-black-700">2:59PM</div>
       <div className="flex items-center">
@@ -291,7 +291,7 @@ function Weather() {
         <button
           onClick={() => setSelectedButton("Today")}
           className={`${
-            selectedButton === "Today" ? "text-black border-b-2 border-black font-semibold" : "text-gray-600"
+            selectedButton === "Today" ? "text-black border-b-2 border-black font-semibold" : "text-gray-800"
           }`}
         >
           Today
@@ -299,7 +299,7 @@ function Weather() {
         <button
           onClick={() => setSelectedButton("Tomorrow")}
           className={`${
-            selectedButton === "Tomorrow" ? "text-black border-b-2 border-black font-semibold" : "text-gray-600"
+            selectedButton === "Tomorrow" ? "text-black border-b-2 border-black font-semibold" : "text-gray-800"
           }`}
         >
           Tomorrow
@@ -307,7 +307,7 @@ function Weather() {
         <button
           onClick={() => setSelectedButton("10 Days")}
           className={`${
-            selectedButton === "10 Days" ? "text-black border-b-2 border-black font-semibold" : "text-gray-600"
+            selectedButton === "10 Days" ? "text-black border-b-2 border-black font-semibold" : "text-gray-800"
           }`}
         >
           10 Days
@@ -364,7 +364,7 @@ function Weather() {
     {/*Sun % Moon summary */}
     <section className="bg-white p-6 rounded-lg shadow-md pb-14">
         <div className="flex justify-start items-center mb-4">
-        <span className="text-gray-500">Sun & Moon Summary</span>
+        <span className="text-gray-800">Sun & Moon Summary</span>
          </div>
          <div className="flex flex-col xsm:flex-row justify-between items-start">
          <div className="flex items-center ">
@@ -470,7 +470,7 @@ function Weather() {
         className={`pb-1 ${
           selectedButton === "Today"
             ? "text-black border-b-2 border-black font-semibold"
-            : "text-gray-500"
+            : "text-gray-800"
         }`}
       >
         Today
@@ -480,7 +480,7 @@ function Weather() {
         className={`pb-1 ${
           selectedButton === "Tomorrow"
             ? "text-black border-b-2 border-black font-semibold"
-            : "text-gray-500"
+            : "text-gray-800"
         }`}
       >
         Tomorrow
@@ -490,7 +490,7 @@ function Weather() {
         className={`pb-1 ${
           selectedButton === "10 Days"
             ? "text-black border-b-2 border-black font-semibold"
-            : "text-gray-500"
+            : "text-gray-800"
         }`}
       >
         10 Days
@@ -500,7 +500,7 @@ function Weather() {
         className={`pb-1 ${
           selectedButton === "Monthly"
             ? "text-black border-b-2 border-black font-semibold"
-            : "text-gray-500"
+            : "text-gray-800"
         }`}
       >
         Monthly
