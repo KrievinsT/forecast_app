@@ -180,18 +180,16 @@ function Weather() {
     <div className="flex items-center space-x-4">
         <button className="p-2 rounded-full">
             {/* Icon for notifications */}
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6 text-gray-700 hidden 440px:block">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
-            </svg>
+
+            <img src="./images/notification.gif" alt="Description of the image"  className="size-6 text-gray-700 hidden 440px:block"/>
         </button>
         
         <img src="./images/profile-pic.jpg" alt="Description of the image"  className=" rounded-full size-9 block 890px:hidden hidden 530px:block "/>
    
         <button className="p-2 rounded-full hidden 890px:block">
             {/* Icon for settings */}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-gray-700">
-            <path fillRule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clipRule="evenodd" />
-          </svg>
+
+          <img src="./images/settings.gif" alt="Description of the image"  className="size-6 text-gray-700"/>
 
         </button>
     </div>
@@ -218,8 +216,8 @@ function Weather() {
   <div className="text-5xl font-semibold text-black mr-2 pl-3">12°F</div>
   <div className="flex flex-col text-sm text-gray-500 pl-6">
       {/* Current condition*/}
-    <div>Rainy</div>
-    <div className="text-gray-700">Feels Like 35°</div>
+    <div className="text-gray-800">Rainy</div>
+    <div className="text-gray-900">Feels Like 35°</div>
   </div>
 </div>
     </div>
@@ -240,35 +238,35 @@ function Weather() {
         <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/clouds.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-500">Air Quality</span>
+        <span className="text-gray-800">Air Quality</span>
       </div>
       <span className="text-2xl font-semibold ml-7">156</span>
     </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/wind.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-500">Wind</span>
+        <span className="text-gray-800">Wind</span>
         </div>
         <span className="text-2xl font-semibold ml-7">1 mph</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/humidity.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-500">Humidity</span>
+        <span className="text-gray-800">Humidity</span>
         </div>
         <span className="text-2xl font-semibold ml-7">54%</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/vision.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-500">Visibility</span>
+        <span className="text-gray-800">Visibility</span>
         </div>
         <span className="text-2xl font-semibold ml-7">3 mi</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-500">Pressure</span>
+        <span className="text-gray-800">Pressure</span>
         </div>
         <span className="text-2xl font-semibold ml-7">27.65 in</span>
       </div>
@@ -278,7 +276,7 @@ function Weather() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           </svg>
-        <span className="text-gray-500">Pressure</span>
+        <span className="text-gray-800">Pressure</span>
         </div>
         <span className="text-2xl font-semibold ml-7">66°</span>
       </div>
@@ -372,7 +370,7 @@ function Weather() {
          <div className="flex items-center ">
          
         <img src="./images/sun.gif" alt="Description of the image"  className="size-12"/>
-        <div className="flex flex-col text-sm text-gray-500 pl-5">
+        <div className="flex flex-col text-sm text-gray-800 pl-5">
         <div>Air Quality</div>
         <span className="text-xl font-semibold text-black">156</span>
         </div>
@@ -380,8 +378,8 @@ function Weather() {
         <div className="flex items-center space-x-4">
            <div className="flex items-center space-x-4 pt-4 xsm:pt-0">
           <div className="flex flex-col items-center">
-          <img src="./images/field.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
-            <div className="text-gray-500 text-sm">Sunrise</div>
+          <img src="./images/field.gif" alt="Description of the image"  className="w-6 h-6  mb-1"/>
+            <div className="text-gray-800 text-sm">Sunrise</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
           </div>
 
@@ -406,8 +404,8 @@ function Weather() {
       </div>
       <div className="flex flex-col items-center">
                 
-            <img src="./images/sunset.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
-            <div className="text-gray-500 text-sm">Sunset</div>
+            <img src="./images/sunset.gif" alt="Description of the image"  className="w-6 h-6  mb-1"/>
+            <div className="text-gray-800 text-sm">Sunset</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
          </div>
       </div>
@@ -417,7 +415,7 @@ function Weather() {
          <div className="flex flex-col xsm:flex-row justify-between items-start pt-12">
          <div className="flex items-center ">
          <img src="./images/moon.gif" alt="Description of the image"  className="size-12"/>
-        <div className="flex flex-col text-sm text-gray-500 pl-5">
+        <div className="flex flex-col text-sm text-gray-800 pl-5">
         <div>Air Quality</div>
         <span className="text-xl font-semibold text-black">156</span>
         </div>
@@ -425,8 +423,8 @@ function Weather() {
         <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-4 pt-6 xsm:pt-0">
           <div className="flex flex-col items-center">
-          <img src="./images/moon-rise.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
-            <div className="text-gray-500 text-sm">Moonrise</div>
+          <img src="./images/moon-rise.gif" alt="Description of the image"  className="w-6 h-6 mb-1"/>
+            <div className="text-gray-800 text-sm">Moonrise</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
           </div>
 
@@ -450,8 +448,8 @@ function Weather() {
         </svg>
       </div>
       <div className="flex flex-col items-center">
-      <img src="./images/moon-set.gif" alt="Description of the image"  className="w-5 h-5  mb-1"/>
-            <div className="text-gray-500 text-sm">Moonset</div>
+      <img src="./images/moon-set.gif" alt="Description of the image"  className="w-6 h-6 mb-1"/>
+            <div className="text-gray-800 text-sm">Moonset</div>
             <span className="text-sm font-semibold text-black">5:43AM</span>
          </div>
       </div>
