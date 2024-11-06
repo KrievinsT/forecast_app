@@ -80,20 +80,20 @@ function Weather() {
   
 
   const forecastData = [
-    { time: "1AM", description: "Mostly Cloudy", temperature: "12°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers very much", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14°", wind: "120km", humidity: "59%" },
+    { time: "1AM", description: "Mostly Cloudy", temperature: "12", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers very much", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
+    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
   ];
 
   
@@ -214,7 +214,7 @@ function Weather() {
       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
     </svg>
   <div className="text-5xl font-semibold text-black  pl-3">12</div>
-  <div className="text-5xl font-semibold text-black">°F</div>
+  <div className="text-2xl font-semibold text-gray-600 mb-5">°F</div>
   <div className="flex flex-col text-sm text-gray-500 pl-6">
       {/* Current condition*/}
     <div className="text-gray-800">Rainy</div>
@@ -350,7 +350,10 @@ function Weather() {
             </div>
             <p className="mt-2 text-sm text-gray-800">{item.time}</p>
             <p className="mt-1 text-sm font-semibold">{item.description}</p>
-            <p className="text-3xl font-bold">{item.temperature}C</p>
+            <div className="flex items-center">
+            <p className="text-3xl font-bold">{item.temperature}</p>
+            <p className="text-xl font-semibold text-gray-600 mb-2">°F</p>
+            </div>
             <p className="text-sm text-gray-800">Wind: {item.wind}</p>
             <p className="text-sm text-gray-800">Humidity: {item.humidity}</p>
           </div>
@@ -543,7 +546,10 @@ function Weather() {
 
           <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
           <div className="flex items-center space-x-2">
-            <div className="text-2xl  font-semibold text-gray-800 pr-2">{item.temperature}C</div>
+          <div className="flex items-center">
+            <div className="text-2xl  font-semibold text-gray-800 ">{item.temperature}</div>
+            <p className="text-xl font-semibold text-gray-600  pr-2 mb-2">°F</p>
+            </div>
             <div className="flex flex-col items-start">
               <span className="text-gray-800">Wind: {item.wind}</span>
               <span className="text-gray-800">Humidity: {item.humidity}</span>
