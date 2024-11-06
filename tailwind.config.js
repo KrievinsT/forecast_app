@@ -11,6 +11,7 @@ module.exports = {
         'xsm': '590px',
         '530px': '530px', 
         '440px': '440px', 
+        '640px': '640px', 
           
       },
     },

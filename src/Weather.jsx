@@ -183,7 +183,7 @@ function Weather() {
       onClick={toggleTheme}
       className="relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-300
                  bg-gray-300 text-gray-1000 hover:bg-gray-400
-                 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700  hidden 640px:flex "
     >
       {isDarkMode ? (
         // Dark mode icon
