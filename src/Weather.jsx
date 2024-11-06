@@ -77,6 +77,36 @@ function Weather() {
     };
   }, []);
 
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+ 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+    } else {
+     
+      setIsDarkMode(false);
+    }
+  }, []);
+
+ 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+ 
+  useEffect(() => {
+    if (isDarkMode) {
+      localStorage.setItem('theme', 'dark');
+      document.body.classList.add('dark');
+    } else {
+      localStorage.setItem('theme', 'light');
+      document.body.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   
 
   const forecastData = [
@@ -100,7 +130,7 @@ function Weather() {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 relative">
+    <div className={`min-h-screen p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       {/* Header */}
       <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 fixed top-6 left-6 right-6 z-50"> 
     <div className="flex items-center">
@@ -149,20 +179,28 @@ function Weather() {
             <div className="absolute right-0.5 bg-gray-100 w-10 h-[90%] rounded-r-lg"></div>
         </div>
         {/* Light/Dark button */}
-        <button className="relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-300 
-                bg-gray-300 text-gray-1000 hover:bg-gray-400 
-                dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 hidden-on-small-screen hidden 890px:flex 890px:max-w-xs 890px:mx-auto">
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        fill="none" 
-        viewBox="0 0 24 24" 
-        strokeWidth="1.5" 
-        stroke="currentColor" 
-        className="w-5 h-5 mr-2"> {/* Add margin-right for spacing */}
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-    </svg>
-    <span>Light</span>
-  </button> 
+        <button
+      onClick={toggleTheme}
+      className="relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-300
+                bg-gray-300 text-gray-1000 hover:bg-gray-400
+                dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 hidden-on-small-screen hidden 890px:flex 890px:max-w-xs 890px:mx-auto"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        stroke="currentColor"
+        className="w-5 h-5 mr-1"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+        />
+      </svg>
+      <span>{isDarkMode ? 'Dark' : 'Light'}</span>
+    </button> 
     </div>
 
     <div className="flex items-center space-x-4">
@@ -188,7 +226,7 @@ function Weather() {
 
 <main className="mt-24"> 
 <div className="flex max-w-[100%] mx-auto">
-<div className="w-[60%] bg-gray-100 pe-8 responsive-width">
+<div className="w-[60%] ${isDarkMode ? 'bg-gray-800 ' : 'bg-gray-100 '}`} pe-8 responsive-width">
     {/* Current Weather */}
     <section className="bg-white p-6 rounded-lg shadow-md mb-6">
   <div className="flex justify-between">
@@ -272,40 +310,46 @@ function Weather() {
     </section>
 
 
-    <div className="flex justify-start items-center mb-4 block 982px:hidden">
+    <div className="flex justify-start items-center mb-4 block 982px:hidden ">
   <section className="w-full rounded-lg pb-6">
     {/* Button section */}
-    <div className="flex justify-between items-center mb-4">
-      <div className="flex space-x-6">
-        <button
-          onClick={() => setSelectedButton("Today")}
-          className={`${
-            selectedButton === "Today" ? "text-black border-b-2 border-black font-semibold" : "text-gray-800"
-          }`}
-        >
-          Today
-        </button>
-        <button
-          onClick={() => setSelectedButton("Tomorrow")}
-          className={`${
-            selectedButton === "Tomorrow" ? "text-black border-b-2 border-black font-semibold" : "text-gray-800"
-          }`}
-        >
-          Tomorrow
-        </button>
-        <button
-          onClick={() => setSelectedButton("10 Days")}
-          className={`${
-            selectedButton === "10 Days" ? "text-black border-b-2 border-black font-semibold" : "text-gray-800"
-          }`}
-        >
-          10 Days
-        </button>
-      </div>
-      <button className="text-white px-4 py-2 rounded-lg transition-colors duration-300 bg-gray-300 text-gray-1000 hover:bg-gray-400 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
-        See Monthly Cast
-      </button>
-    </div>
+    <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+  <div className="flex space-x-6">
+    <button
+      onClick={() => setSelectedButton("Today")}
+      className={`${
+        selectedButton === "Today"
+          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+      }`}
+    >
+      Today
+    </button>
+    <button
+      onClick={() => setSelectedButton("Tomorrow")}
+      className={`${
+        selectedButton === "Tomorrow"
+          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+      }`}
+    >
+      Tomorrow
+    </button>
+    <button
+      onClick={() => setSelectedButton("10 Days")}
+      className={`${
+        selectedButton === "10 Days"
+          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+      }`}
+    >
+      10 Days
+    </button>
+  </div>
+  <button className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode ? 'bg-white text-black hover:bg-grey-500' : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}>
+    See Monthly Cast
+  </button>
+</div>
 
     {/* Weather Cards */}
     <div>
