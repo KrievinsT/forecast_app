@@ -213,7 +213,8 @@ function Weather() {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-500">
       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
     </svg>
-  <div className="text-5xl font-semibold text-black mr-2 pl-3">12°F</div>
+  <div className="text-5xl font-semibold text-black  pl-3">12</div>
+  <div className="text-5xl font-semibold text-black">°F</div>
   <div className="flex flex-col text-sm text-gray-500 pl-6">
       {/* Current condition*/}
     <div className="text-gray-800">Rainy</div>
@@ -347,7 +348,7 @@ function Weather() {
                 />
               </svg>
             </div>
-            <p className="mt-2 text-sm text-gray-500">{item.time}</p>
+            <p className="mt-2 text-sm text-gray-800">{item.time}</p>
             <p className="mt-1 text-sm font-semibold">{item.description}</p>
             <p className="text-3xl font-bold">{item.temperature}C</p>
             <p className="text-sm text-gray-800">Wind: {item.wind}</p>
