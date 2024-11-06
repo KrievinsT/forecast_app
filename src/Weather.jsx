@@ -3,43 +3,63 @@ import './index.css';
 import React, { useRef, useState, useEffect } from 'react';
 
 function Weather() {
+
   const [selectedButton, setSelectedButton] = useState("Today");
-  const scrollRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isDragging2, setIsDragging2] = useState(false);
+
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
+  const [startX2, setStartX2] = useState(0);
+  const [startY2, setStartY2] = useState(0);
+
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+  const [scrollLeft2, setScrollLeft2] = useState(0);
+  const [scrollTop2, setScrollTop2] = useState(0);
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX - scrollRef.current.offsetLeft);
-    setStartY(e.pageY - scrollRef.current.offsetTop);
-    setScrollLeft(scrollRef.current.scrollLeft);
-    setScrollTop(scrollRef.current.scrollTop);
+  const scrollRef = useRef(null);
+  const scrollRef2 = useRef(null);
+
+  
+  const handleMouseDown = (e, setDragging, ref, setStartX, setStartY, setScrollLeft, setScrollTop) => {
+    setDragging(true);
+    setStartX(e.pageX - ref.current.offsetLeft);
+    setStartY(e.pageY - ref.current.offsetTop);
+    setScrollLeft(ref.current.scrollLeft);
+    setScrollTop(ref.current.scrollTop);
     e.preventDefault();
   };
 
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e) => {
+ 
+  const handleMouseMove = (e, isDragging, ref, startX, startY, scrollLeft, scrollTop) => {
     if (!isDragging) return;
 
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const y = e.pageY - scrollRef.current.offsetTop;
+    const x = e.pageX - ref.current.offsetLeft;
+    const y = e.pageY - ref.current.offsetTop;
 
-    const walkX = (x - startX) * 1; 
-    const walkY = (y - startY) * 1; 
+    const walkX = x - startX;
+    const walkY = y - startY;
 
-    scrollRef.current.scrollLeft = scrollLeft - walkX;
-    scrollRef.current.scrollTop = scrollTop - walkY;
+    ref.current.scrollLeft = scrollLeft - walkX; 
+    ref.current.scrollTop = scrollTop - walkY; 
   };
+
+ 
+  const handleMouseUp = (setDragging) => {
+    setDragging(false);
+  };
+
+  useEffect(() => {
+    const handleMouseUpGlobal = () => {
+      setIsDragging(false);
+      setIsDragging2(false);
+    };
+    window.addEventListener('mouseup', handleMouseUpGlobal);
+    return () => {
+      window.removeEventListener('mouseup', handleMouseUpGlobal);
+    };
+  }, []);
 
   useEffect(() => {
     const updateScrollbarVisibility = () => {
@@ -56,6 +76,8 @@ function Weather() {
       window.removeEventListener('resize', updateScrollbarVisibility);
     };
   }, []);
+
+  
 
   const forecastData = [
     { time: "1AM", description: "Mostly Cloudy", temperature: "12°", wind: "120km", humidity: "59%" },
@@ -328,14 +350,14 @@ function Weather() {
 
     {/* Weather Cards */}
     <div>
-      <div
-        className="flex space-x-4 overflow-x-auto hide-scrollbar"
-        ref={scrollRef}
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+    <div
+        ref={scrollRef2}
+        className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
+        onMouseDown={(e) => handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)}
+        onMouseLeave={() => handleMouseUp(setIsDragging2)}
+        onMouseUp={() => handleMouseUp(setIsDragging2)}
+        onMouseMove={(e) => handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)}
+        style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
       >
         {forecastData.map((item, index) => (
           <div key={index} className="p-4 bg-white rounded-lg min-w-[150px] text-start shadow-md">
@@ -549,14 +571,14 @@ function Weather() {
   </div>
 
   <div
-      ref={scrollRef}
-      className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-      onMouseDown={handleMouseDown}
-      onMouseLeave={handleMouseLeave}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      style={{ cursor: isDragging ? 'grabbing' : 'grab' }} 
-    >
+        ref={scrollRef}
+        className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        onMouseDown={(e) => handleMouseDown(e, setIsDragging, scrollRef, setStartX, setStartY, setScrollLeft, setScrollTop)}
+        onMouseLeave={() => handleMouseUp(setIsDragging)}
+        onMouseUp={() => handleMouseUp(setIsDragging)}
+        onMouseMove={(e) => handleMouseMove(e, isDragging, scrollRef, startX, startY, scrollLeft, scrollTop)}
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+      >
       {forecastData.map((item, index) => (
         <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2">
           <div className="flex items-center space-x-2">
@@ -581,9 +603,8 @@ function Weather() {
           </div>
 
           <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
-
           <div className="flex items-center space-x-2">
-            <div className="text-lg text-gray-800">{item.temperature}</div>
+            <div className="text-2xl  font-semibold text-gray-800 pr-2">{item.temperature}C</div>
             <div className="flex flex-col items-start">
               <span className="text-gray-800">Wind: {item.wind}</span>
               <span className="text-gray-800">Humidity: {item.humidity}</span>
