@@ -79,26 +79,33 @@ function Weather() {
 
 
 
-    const [isDarkMode, setIsDarkMode] = useState(false);
-  
-    useEffect(() => {
-      const savedTheme = localStorage.getItem('theme');
-      setIsDarkMode(savedTheme === 'dark');
-    }, []);
-  
-    const toggleTheme = () => {
-      setIsDarkMode((prevMode) => !prevMode);
-    };
-  
-    useEffect(() => {
-      if (isDarkMode) {
-        localStorage.setItem('theme', 'dark');
-        document.body.classList.add('dark');
-      } else {
-        localStorage.setItem('theme', 'light');
-        document.body.classList.remove('dark');
-      }
-    }, [isDarkMode]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      setIsDarkMode(true);
+    } else {
+      document.body.classList.add('light');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  useEffect(() => {
+    if (isDarkMode) {
+      localStorage.setItem('theme', 'dark');
+      document.body.classList.add('dark');
+      document.body.classList.remove('light');
+    } else {
+      localStorage.setItem('theme', 'light');
+      document.body.classList.add('light');
+      document.body.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   
 
@@ -176,7 +183,7 @@ function Weather() {
       onClick={toggleTheme}
       className="relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-300
                  bg-gray-300 text-gray-1000 hover:bg-gray-400
-                 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 hidden-on-small-screen hidden 890px:flex 890px:max-w-xs 890px:mx-auto"
+                 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
     >
       {isDarkMode ? (
         // Dark mode icon
