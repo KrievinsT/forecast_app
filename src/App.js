@@ -37,7 +37,7 @@ function App() {
     getUserLocation();
     setDate(new Date().toISOString().split('T')[0]);
     const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 15);
+    maxDate.setDate(maxDate.getDate() + 14);
     setMaxDate(maxDate.toISOString().split('T')[0]);
     const minDate = new Date();
     minDate.setDate(minDate.getDate() - 3);
