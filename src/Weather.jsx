@@ -181,7 +181,7 @@ function Weather() {
         <button className="p-2 rounded-full">
             {/* Icon for notifications */}
 
-            <img src="./images/notification.gif" alt="Description of the image"  className="size-6 text-gray-700 hidden 440px:block"/>
+            <img src="./images/notification.gif" alt="Description of the image"  className="size-7 text-gray-700 hidden 440px:block"/>
         </button>
         
         <img src="./images/profile-pic.jpg" alt="Description of the image"  className=" rounded-full size-9 block 890px:hidden hidden 530px:block "/>
@@ -189,7 +189,7 @@ function Weather() {
         <button className="p-2 rounded-full hidden 890px:block">
             {/* Icon for settings */}
 
-          <img src="./images/settings.gif" alt="Description of the image"  className="size-6 text-gray-700"/>
+          <img src="./images/settings.gif" alt="Description of the image"  className="size-7 text-gray-700"/>
 
         </button>
     </div>
@@ -241,35 +241,35 @@ function Weather() {
       <img src="./images/clouds.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Air Quality</span>
       </div>
-      <span className="text-2xl font-semibold ml-7">156</span>
+      <span className="text-2xl font-semibold ml-8">156</span>
     </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/wind.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Wind</span>
         </div>
-        <span className="text-2xl font-semibold ml-7">1 mph</span>
+        <span className="text-2xl font-semibold ml-8">1 mph</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/humidity.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Humidity</span>
         </div>
-        <span className="text-2xl font-semibold ml-7">54%</span>
+        <span className="text-2xl font-semibold ml-8">54%</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/vision.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Visibility</span>
         </div>
-        <span className="text-2xl font-semibold ml-7">3 mi</span>
+        <span className="text-2xl font-semibold ml-8">3 mi</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Pressure</span>
         </div>
-        <span className="text-2xl font-semibold ml-7">27.65 in</span>
+        <span className="text-2xl font-semibold ml-8">27.65 in</span>
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
@@ -279,7 +279,7 @@ function Weather() {
           </svg>
         <span className="text-gray-800">Pressure</span>
         </div>
-        <span className="text-2xl font-semibold ml-7">66°</span>
+        <span className="text-2xl font-semibold ml-8">66°</span>
       </div>
     </section>
 
