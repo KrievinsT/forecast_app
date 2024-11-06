@@ -37,19 +37,26 @@ function App() {
     getUserLocation();
     setDate(new Date().toISOString().split('T')[0]);
     const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 15);
+    maxDate.setDate(maxDate.getDate() + 14);
     setMaxDate(maxDate.toISOString().split('T')[0]);
     const minDate = new Date();
     minDate.setDate(minDate.getDate() - 3);
     setMinDate(minDate.toISOString().split('T')[0]);
   }, []);
 
-  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}`;
-  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}`;
+  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
+  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}&aqi=yes`;
 
   const handleError = (error) => {
     setError(error);
     // console.error('Error:', error);
+  };
+
+  const getDefraBand = (value) => {
+    if (value <= 35) return 'Low';
+    if (value <= 53) return 'Moderate';
+    if (value <= 70) return 'High';
+    return 'Very High';
   };
 
   const fetchData = () => {
@@ -102,12 +109,12 @@ function App() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
-          <input 
-            type="date" 
-            value={date} 
+          <input
+            type="date"
+            value={date}
             max={maxDate}
             min={minDate}
-            onChange={(e) => setDate(e.target.value)} 
+            onChange={(e) => setDate(e.target.value)}
           />
         </form>
         {!error && data.current && (
@@ -130,6 +137,8 @@ function App() {
         {data.current && !error && (
           <div>
             <h2>City: {data.location.name}</h2>
+            <p>Last updated: {data.current.last_updated}</p>
+            <p>Current time: {data.location.localtime}</p>
             <p>Current temperature: {isFahrenheit ? data.current.temp_f : data.current.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
             <p>Actual feel: {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°{isFahrenheit ? 'F' : 'C'}</p>
             <p>Current wind speed: {isMPH ? data.current.wind_mph + ' miles' : data.current.wind_kph + ' kilometers'} per hour</p>
@@ -137,7 +146,22 @@ function App() {
             <p>Current humidity: {data.current.humidity}%</p>
             <p>Condition: {data.current.condition.text}</p>
             <img src={data.current.condition.icon} alt="Weather Icon"></img>
-            <p>UV index: {data.current.uv}</p>
+            <p>Current pressure: {data.current.pressure_in + ' in'}</p>
+            <p>Current pressure: {data.current.pressure_mb}°</p>
+            {data.current.air_quality && (
+              <div>
+                <h3>Air polution: {getDefraBand(data.current.air_quality["gb-defra-index"])}</h3>
+                <div>
+                  <p>PM2.5: {data.current.air_quality.pm2_5} µg/m³</p>
+                  <p>PM10: {data.current.air_quality.pm10} µg/m³</p>
+                  <p>NO2: {data.current.air_quality.no2} µg/m³</p>
+                  <p>SO2: {data.current.air_quality.so2} µg/m³</p>
+                  <p>CO: {data.current.air_quality.co} µg/m³</p>
+                  <p>O3: {data.current.air_quality.o3} µg/m³</p>
+                </div>
+              </div>
+            )}
+            <p>UV strenght: {data.current.uv}</p>
           </div>
         )}
         {dataFor && !error && (
@@ -163,13 +187,17 @@ function App() {
         )}
         {dataFor && !error && (
           <div>
-            {/* <p>Date: {dataFor.forecast.forecastday[0].date}</p> */}
             <div style={{ overflowY: 'scroll', overflowX: 'hidden', height: '400px' }}>
               {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
                 <div key={index}>
                   <p>Time: {hourData.time}</p>
+                  <p>Visibility: {isMPH ? hourData.vis_miles + ' mi' : hourData.vis_km + ' km'}</p>
                   <p>Temperature: {isFahrenheit ? hourData.temp_f : hourData.temp_c}°{isFahrenheit ? 'F' : 'C'}</p>
                   <p>Condition: {hourData.condition.text}</p>
+                  <p>Wind: {isMPH ? hourData.wind_mph + ' mi' : hourData.wind_kph + ' km'} per hour</p>
+                  <p>Humidity: {hourData.humidity}%</p>
+                  <p>Chance to rain: {hourData.chance_of_rain}%</p>
+                  <p>Chance to snow: {hourData.chance_of_snow}%</p>
                   <img src={hourData.condition.icon} alt="Weather Icon"></img>
                   <p>___________________</p>
                 </div>
