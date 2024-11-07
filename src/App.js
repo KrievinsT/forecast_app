@@ -174,6 +174,7 @@ function App() {
             <img src={dataFor.forecast.forecastday[0].day.condition.icon} alt="Weather Icon"></img>
             <p>Chance to rain: {dataFor.forecast.forecastday[0].day.daily_chance_of_rain}%</p>
             <p>Chance to snow: {dataFor.forecast.forecastday[0].day.daily_chance_of_snow}%</p>
+            <p>Visibility: {isMPH ? dataFor.forecast.forecastday[0].day.avgvis_miles + ' mi' : dataFor.forecast.forecastday[0].day.avgvis_km + ' km'}</p>
           </div>
         )}
         {dataFor && !error && (
