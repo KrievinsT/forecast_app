@@ -127,8 +127,6 @@ function Weather() {
   ];
 
   
-
-
   return (
     <div className={`min-h-screen p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       {/* Header */}
@@ -240,9 +238,6 @@ function Weather() {
     </div>
 </header>
 
-
-
-
 <main className="mt-24"> 
 <div className="flex max-w-[100%] mx-auto">
 <div className="w-[60%] ${isDarkMode ? 'bg-gray-800 ' : 'bg-gray-100 '}`} pe-8 responsive-width">
@@ -318,10 +313,7 @@ function Weather() {
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-          </svg>
+      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Pressure</span>
         </div>
         <span className="text-2xl font-semibold ml-8">66°</span>
@@ -416,7 +408,7 @@ function Weather() {
 
 
 
-    {/*Sun % Moon summary */}
+    {/*Sun & Moon summary */}
     <section className="bg-white p-6 rounded-lg shadow-md pb-14">
         <div className="flex justify-start items-center mb-4">
         <span className="text-gray-800">Sun & Moon Summary</span>
