@@ -7,21 +7,113 @@ function Weather() {
   const [selectedButton, setSelectedButton] = useState("Today");
   const [isDragging, setIsDragging] = useState(false);
   const [isDragging2, setIsDragging2] = useState(false);
-
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
   const [startX2, setStartX2] = useState(0);
   const [startY2, setStartY2] = useState(0);
-
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft2, setScrollLeft2] = useState(0);
   const [scrollTop2, setScrollTop2] = useState(0);
-
   const scrollRef = useRef(null);
   const scrollRef2 = useRef(null);
 
+
+  const [data, setData] = useState([]);
+  const [dataFor, setDataFor] = useState(null);
+ 
+  const [error, setError] = useState(null);
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [isFahrenheit, setIsFahrenheit] = useState(false);
+  const [isMPH, setIsMPH] = useState(false);
+  const [maxDate, setMaxDate] = useState("");
+  const [minDate, setMinDate] = useState("");
+
+
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords;
+        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+          .then(response => response.json())
+          .then(data => {
+            setLocation(data.city || data.locality || data.principalSubdivision);
+          })
+          .catch(error => {
+            console.error('Error fetching city name:', error);
+          });
+      },
+        error => {
+          console.error('Error getting location', error);
+        });
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  };
+
+  useEffect(() => {
+    getUserLocation();
+    setDate(new Date().toISOString().split('T')[0]);
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 14);
+    setMaxDate(maxDate.toISOString().split('T')[0]);
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() - 3);
+    setMinDate(minDate.toISOString().split('T')[0]);
+  }, []);
+
+  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
+  const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${date}&aqi=yes`;
+
+  const handleError = (error) => {
+    setError(error);
+   
+  };
+
+ 
+
+  const fetchData = () => {
+    if (!location) return;
+    return fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('City not found or doesn’t exist');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setData(data);
+        setError(null);
+      })
+      .catch(handleError);
+  };
+
+  const fetchDataFor = () => {
+    if (!location || !date) return;
+    return fetch(urlFor)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('City not found or doesn’t exist');
+        }
+        return response.json();
+      })
+      .then(dataFor => {
+        console.log('Forecast data:', dataFor);
+        setDataFor(dataFor);
+        setError(null);
+      })
+      .catch(handleError);
+  };
+
+  useEffect(() => {
+    if (location && date) {
+      fetchData(); fetchDataFor();
+    }
+  }, [location, date]);
+
   
+ 
   const handleMouseDown = (e, setDragging, ref, setStartX, setStartY, setScrollLeft, setScrollTop) => {
     setDragging(true);
     setStartX(e.pageX - ref.current.offsetLeft);
@@ -34,21 +126,47 @@ function Weather() {
  
   const handleMouseMove = (e, isDragging, ref, startX, startY, scrollLeft, scrollTop) => {
     if (!isDragging) return;
-
+  
     const x = e.pageX - ref.current.offsetLeft;
     const y = e.pageY - ref.current.offsetTop;
-
+  
     const walkX = x - startX;
     const walkY = y - startY;
-
-    ref.current.scrollLeft = scrollLeft - walkX; 
-    ref.current.scrollTop = scrollTop - walkY; 
+  
+    ref.current.scrollLeft = scrollLeft - walkX;
+    ref.current.scrollTop = scrollTop - walkY;
   };
+  
 
  
-  const handleMouseUp = (setDragging) => {
-    setDragging(false);
-  };
+  
+const handleMouseUp = (setDragging) => {
+  setDragging(false);
+};
+
+const handleMouseDown1 = (e) => {
+  handleMouseDown(e, setIsDragging, scrollRef, setStartX, setStartY, setScrollLeft, setScrollTop);
+};
+
+const handleMouseMove1 = (e) => {
+  handleMouseMove(e, isDragging, scrollRef, startX, startY, scrollLeft, scrollTop);
+};
+
+const handleMouseUp1 = () => {
+  handleMouseUp(setIsDragging);
+};
+
+const handleMouseDown2 = (e) => {
+  handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2);
+};
+
+const handleMouseMove2 = (e) => {
+  handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2);
+};
+
+const handleMouseUp2 = () => {
+  handleMouseUp(setIsDragging2);
+};
 
   useEffect(() => {
     const handleMouseUpGlobal = () => {
@@ -107,26 +225,48 @@ function Weather() {
     }
   }, [isDarkMode]);
 
-  
 
-  const forecastData = [
-    { time: "1AM", description: "Mostly Cloudy", temperature: "12", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers very much", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-    { time: "2AM", description: "Rain Showers", temperature: "14", wind: "120km", humidity: "59%" },
-  ];
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    const hours = date.getHours() % 12 || 12; 
+    const minutes = date.getMinutes(); 
+    const period = date.getHours() >= 12 ? 'PM' : 'AM';
+  
+    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}${period}`; 
+  };
+
+
+  const [sunProgress, setSunProgress] = useState(0);
+  const [moonProgress, setMoonProgress] = useState(0);
 
   
+  const convertToMinutes = (timeStr) => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+ 
+  useEffect(() => {
+    const currentTime = new Date();
+    const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+
+    const sunriseMinutes = convertToMinutes('06:00'); 
+    const sunsetMinutes = convertToMinutes('18:00'); 
+    const moonriseMinutes = convertToMinutes('20:00'); 
+    const moonsetMinutes = convertToMinutes('06:00'); 
+
+    // Sun progress calculation
+    const sunElapsed = currentMinutes - sunriseMinutes;
+    const sunDuration = sunsetMinutes - sunriseMinutes;
+    setSunProgress(Math.min(Math.max((sunElapsed / sunDuration) * 100, 0), 100));
+
+    // Moon progress calculation
+    const moonElapsed = currentMinutes - moonriseMinutes;
+    const moonDuration = moonsetMinutes - moonriseMinutes;
+    setMoonProgress(Math.min(Math.max((moonElapsed / moonDuration) * 100, 0), 100));
+  }, []);
+
+
   return (
     <div className={`min-h-screen p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       {/* Header */}
@@ -150,16 +290,20 @@ function Weather() {
         <h1 className="text-2xl font-semibold text-blue-500 mr-3 cursor-pointer">SkyCast</h1> 
 
         <img src="./images/google-maps.gif" alt="Description of the image"  className="w-6 h-6 ml-4 md:ml-6 lg:ml-8 xl:ml-14 hidden 890px:block"/>
-
-        <span className="text-gray-800 ml-1 hidden 890px:block">Khulna, Bangladesh</span> 
+        {data.current && !error && (
+        <span className="text-gray-800 ml-1 hidden 890px:block">{data.location.name}</span> 
+      )}
     </div>
     <div className="flex items-center space-x-4">
         <div className="relative flex items-center">
             {/* Search bar */}
+            <form>
             <input
                 type="text"
                 placeholder="Search Location"
                 className="pl-10 pr-10 py-2 border-2 border-gray-300 rounded-lg text-sm w-full max-w-full min-w-[188px]"
+                value={location}
+            onChange={(e) => setLocation(e.target.value)}
             />
             <svg
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600"
@@ -172,8 +316,8 @@ function Weather() {
                 />
             </svg>
 
-           
             <img src="./images/worldwide.gif" alt="Description of the image"  className="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-6 h-6  z-10"/>
+            </form>
             <div className="absolute right-0.5 bg-gray-100 w-10 h-[90%] rounded-r-lg"></div>
         </div>
         {/* Light/Dark button */}
@@ -247,31 +391,59 @@ function Weather() {
     <div>
       <div className="text-sm text-gray-800">Current Weather</div>
         {/* Current time*/}
-      <div className="text-lg font-medium text-black-700">2:59PM</div>
+        
+        {data.current && !error && (
+      <div className="text-lg font-medium text-black-700">{formatTime(data.location.localtime)}</div>
+    )}
       <div className="flex items-center">
           {/* Current tempeture*/}
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
-    </svg>
-  <div className="text-5xl font-semibold text-black  pl-3">12</div>
-  <div className="text-2xl font-semibold text-gray-600 mb-5">°F</div>
+    
+    {data.current && !error && (
+    <img className="w-12 h-12" src={data.current.condition.icon} alt="Weather Icon"></img>
+  )}
+  {data.current && !error && (
+  <div className="text-5xl font-semibold text-black  pl-3">{isFahrenheit ? data.current.temp_f : data.current.temp_c}</div>
+)}
+  {data.current && !error && (
+    <p className="text-2xl font-semibold text-gray-600 pr-2 mb-2">°{isFahrenheit ? 'F' : 'C'}</p>
+)}
   <div className="flex flex-col text-sm text-gray-500 pl-6">
       {/* Current condition*/}
-    <div className="text-gray-800">Rainy</div>
-    <div className="text-gray-900">Feels Like 35°</div>
-  </div>
+      {data.current && !error && (
+    <div className="text-gray-800">{data.current.condition.text}</div>
+  )}
+  {data.current && !error && (
+    <div className="text-gray-900">Feels Like {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°{isFahrenheit ? 'F' : 'C'}</div>
+  )}
+    </div>
 </div>
     </div>
     <div className="text-gray-600">
-      <select className="bg-transparen p-1 text-gray-600 focus:outline-none">
-        <option value="Fahrenheit">Fahrenheit</option>
-        <option value="Celsius">Celsius</option>
-      </select>
+    
+      {!error && data.current && (
+          <div  className="text-gray-900"
+            onClick={() => setIsFahrenheit(!isFahrenheit)}
+            style={{ cursor: 'pointer' }}
+          >
+            Display in {isFahrenheit ? 'Celsius' : 'Fahrenheit'}
+          </div>
+        )}
+         {!error && data.current && (
+          <div  className="text-gray-900"
+            onClick={() => setIsMPH(!isMPH)}
+            style={{ cursor: 'pointer' }}
+          >
+            Display in {isMPH ? 'Kilometers' : 'Miles'}
+          </div>
+        )}
+     
     </div>
   </div>
+  {data.current && !error && (
   <p className="mt-4 text-gray-800">
-    There will be mostly sunny skies. The high will be 35°
+  Current wind direction: {data.current.wind_dir}
   </p>
+   )}
 </section>
 
     {/* Statistical Details */}
@@ -279,44 +451,58 @@ function Weather() {
         <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/clouds.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-800">Air Quality</span>
+        <span className="text-gray-800">Air Quality </span>
       </div>
-      <span className="text-2xl font-semibold ml-8">156</span>
+      {data.current && !error && (
+      <span className="text-2xl font-semibold ml-8">{(data.current.air_quality["gb-defra-index"])}</span>
+    )}
     </div>
+   
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/wind.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Wind</span>
         </div>
-        <span className="text-2xl font-semibold ml-8">1 mph</span>
-      </div>
+        {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8">{isMPH ? data.current.wind_mph + ' mph' : data.current.wind_kph + ' km/h'}</span>
+      )}
+        </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/humidity.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Humidity</span>
         </div>
-        <span className="text-2xl font-semibold ml-8">54%</span>
+        {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8">{data.current.humidity}%</span>
+      )}
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/vision.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Visibility</span>
         </div>
-        <span className="text-2xl font-semibold ml-8">3 mi</span>
+
+      {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8"> {isMPH ? data.current.vis_miles + ' mi' : data.current.vis_km + ' km'}</span>
+      )}
+        </div>
+      <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+      <div className="flex items-center space-x-2">
+      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
+        <span className="text-gray-800">Pressure</span>
+        </div>
+        {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8"> {data.current.pressure_in + ' in'}</span>
+      )}
       </div>
       <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
       <div className="flex items-center space-x-2">
       <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
         <span className="text-gray-800">Pressure</span>
         </div>
-        <span className="text-2xl font-semibold ml-8">27.65 in</span>
-      </div>
-      <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
-      <div className="flex items-center space-x-2">
-      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-800">Pressure</span>
-        </div>
-        <span className="text-2xl font-semibold ml-8">66°</span>
+        {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8">{data.current.pressure_mb}°</span>
+      )}
       </div>
     </section>
 
@@ -363,146 +549,179 @@ function Weather() {
 </div>
 
     {/* Weather Cards */}
-    <div>
-    <div
-        ref={scrollRef2}
-        className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
-        onMouseDown={(e) => handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)}
-        onMouseLeave={() => handleMouseUp(setIsDragging2)}
-        onMouseUp={() => handleMouseUp(setIsDragging2)}
-        onMouseMove={(e) => handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)}
-        style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
-      >
-        {forecastData.map((item, index) => (
-          <div key={index} className="p-4 bg-white rounded-lg min-w-[150px] text-start shadow-md">
-            <div className="flex justify-start">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-12 h-12 text-gray-500"
+
+      <div>
+        {dataFor && !error && (
+          <div
+            ref={scrollRef2}
+            className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
+            onMouseDown={(e) =>
+              handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)
+            }
+            onMouseLeave={() => handleMouseUp(setIsDragging2)}
+            onMouseUp={() => handleMouseUp(setIsDragging2)}
+            onMouseMove={(e) =>
+              handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)
+            }
+            style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
+          >
+            {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
+              <div
+                key={index}
+                className="p-4 bg-white rounded-lg min-w-[150px] text-start shadow-md"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"
-                />
-              </svg>
-            </div>
-            <p className="mt-2 text-sm text-gray-800">{item.time}</p>
-            <p className="mt-1 text-sm font-semibold">{item.description}</p>
-            <div className="flex items-center">
-            <p className="text-3xl font-bold">{item.temperature}</p>
-            <p className="text-xl font-semibold text-gray-600 mb-2">°F</p>
-            </div>
-            <p className="text-sm text-gray-800">Wind: {item.wind}</p>
-            <p className="text-sm text-gray-800">Humidity: {item.humidity}</p>
+                <div className="flex justify-start">
+                  <img
+                    className="w-12 h-12"
+                    src={hourData.condition.icon} 
+                    alt="Weather Icon"
+                  />
+                </div>
+                <p className="mt-2 text-sm text-gray-800">{formatTime(hourData.time)}</p> 
+                <p className="mt-1 text-sm font-semibold">{hourData.condition.text}</p> 
+                <div className="flex items-center">
+                  <p className="text-3xl font-bold">{isFahrenheit ? hourData.temp_f : hourData.temp_c}</p> 
+                  <p className="text-xl font-semibold text-gray-600 mb-2">
+                    °{isFahrenheit ? 'F' : 'C'}
+                  </p>
+                </div>
+                <p className="text-sm text-gray-800">Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</p> 
+                <p className="text-sm text-gray-800">Humidity: {hourData.humidity}%</p> 
+              </div>
+            ))}
           </div>
-        ))}
+        )}
+        {error && <p>Error loading weather data: {error.message}</p>}
       </div>
-    </div>
-  </section>
-</div>
+        </section>
+      </div>
 
 
 
     {/*Sun & Moon summary */}
     <section className="bg-white p-6 rounded-lg shadow-md pb-14">
-        <div className="flex justify-start items-center mb-4">
+      <div className="flex justify-start items-center mb-4">
         <span className="text-gray-800">Sun & Moon Summary</span>
-         </div>
-         <div className="flex flex-col xsm:flex-row justify-between items-start">
-         <div className="flex items-center ">
-         
-        <img src="./images/sun.gif" alt="Description of the image"  className="size-12"/>
-        <div className="flex flex-col text-sm text-gray-800 pl-5">
-        <div>Air Quality</div>
-        <span className="text-xl font-semibold text-black">156</span>
-        </div>
-        </div>
-        <div className="flex items-center space-x-4">
-           <div className="flex items-center space-x-4 pt-4 xsm:pt-0">
-          <div className="flex flex-col items-center">
-          <img src="./images/field.gif" alt="Description of the image"  className="w-6 h-6  mb-1"/>
-            <div className="text-gray-800 text-sm">Sunrise</div>
-            <span className="text-sm font-semibold text-black">5:43AM</span>
+      </div>
+
+      {/* Sun Section */}
+      <div className="flex flex-col xsm:flex-row justify-between items-start">
+        <div className="flex items-center">
+          <img src="./images/sun.gif" alt="Sun Icon" className="size-12" />
+          <div className="flex flex-col text-sm text-gray-800 pl-5">
+            <div>Air Quality</div>
+            {data.current && !error && (
+              <span className="text-xl font-semibold text-black">
+                {data.current.air_quality["gb-defra-index"]}
+              </span>
+            )}
           </div>
-
-      {/* Half-Circle Progress Bar */}
-      <div className="relative w-48 h-14 overflow-hidden">
-        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 50">
-          <path
-        d="M 10,50 A 40,40 0 1 1 90,50"
-        fill="none"
-        stroke="#e5e5e5"
-        strokeWidth="10"
-      />
-      <path
-        d="M 10,50 A 40,40 0 1 1 90,50"
-        fill="none"
-        stroke="#f59e0b"
-        strokeWidth="10"
-        strokeDasharray="126"  
-        strokeDashoffset="63" 
-          />
-        </svg>
-      </div>
-      <div className="flex flex-col items-center">
-                
-            <img src="./images/sunset.gif" alt="Description of the image"  className="w-6 h-6  mb-1"/>
-            <div className="text-gray-800 text-sm">Sunset</div>
-            <span className="text-sm font-semibold text-black">5:43AM</span>
-         </div>
-      </div>
-
-         </div>
-         </div>
-         <div className="flex flex-col xsm:flex-row justify-between items-start pt-12">
-         <div className="flex items-center ">
-         <img src="./images/moon.gif" alt="Description of the image"  className="size-12"/>
-        <div className="flex flex-col text-sm text-gray-800 pl-5">
-        <div>Air Quality</div>
-        <span className="text-xl font-semibold text-black">156</span>
         </div>
-        </div>
+
         <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-4 pt-6 xsm:pt-0">
-          <div className="flex flex-col items-center">
-          <img src="./images/moon-rise.gif" alt="Description of the image"  className="w-6 h-6 mb-1"/>
-            <div className="text-gray-800 text-sm">Moonrise</div>
-            <span className="text-sm font-semibold text-black">5:43AM</span>
-          </div>
+          <div className="flex items-center space-x-4 pt-4 xsm:pt-0">
+            <div className="flex flex-col items-center">
+              <img src="./images/field.gif" alt="Sunrise Icon" className="w-6 h-6 mb-1" />
+              <div className="text-gray-800 text-sm">Sunrise</div>
+              {dataFor && !error && (
+                <span className="text-sm font-semibold text-black">
+                  {dataFor.forecast.forecastday[0].astro.sunrise}
+                </span>
+              )}
+            </div>
 
-      {/* Half-Circle Progress Bar */}
-      <div className="relative w-48 h-14 overflow-hidden">
-        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 50">
-          <path
-        d="M 10,50 A 40,40 0 1 1 90,50"
-        fill="none"
-        stroke="#e5e5e5"
-        strokeWidth="10"
-      />
-      <path
-        d="M 10,50 A 40,40 0 1 1 90,50"
-        fill="none"
-        stroke="#0D92F4"
-        strokeWidth="10"
-        strokeDasharray="126"  
-        strokeDashoffset="63" 
-          />
-        </svg>
+            {/* Sun Progress Bar */}
+            <div className="relative w-48 h-14 overflow-hidden">
+  <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 50">
+    <path
+      d="M 10,50 A 40,40 0 1 1 90,50"
+      fill="none"
+      stroke="#e5e5e5"
+      strokeWidth="10"
+    />
+    <path
+      d="M 10,50 A 40,40 0 1 1 90,50"
+      fill="none"
+      stroke="#f59e0b"
+      strokeWidth="10"
+      strokeDasharray="126"
+      strokeDashoffset={`${126 - (126 * sunProgress) / 100}`}
+    />
+  </svg>
+</div>
+
+            <div className="flex flex-col items-center">
+              <img src="./images/sunset.gif" alt="Sunset Icon" className="w-6 h-6 mb-1" />
+              <div className="text-gray-800 text-sm">Sunset</div>
+              {dataFor && !error && (
+                <span className="text-sm font-semibold text-black">
+                  {dataFor.forecast.forecastday[0].astro.sunset}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex flex-col items-center">
-      <img src="./images/moon-set.gif" alt="Description of the image"  className="w-6 h-6 mb-1"/>
-            <div className="text-gray-800 text-sm">Moonset</div>
-            <span className="text-sm font-semibold text-black">5:43AM</span>
-         </div>
+
+      {/* Moon Section */}
+      <div className="flex flex-col xsm:flex-row justify-between items-start pt-12">
+        <div className="flex items-center">
+          <img src="./images/moon.gif" alt="Moon Icon" className="size-12" />
+          <div className="flex flex-col text-sm text-gray-800 pl-5">
+            <div>Air Quality</div>
+            {data.current && !error && (
+              <span className="text-xl font-semibold text-black">
+                {data.current.air_quality["gb-defra-index"]}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 pt-6 xsm:pt-0">
+            <div className="flex flex-col items-center">
+              <img src="./images/moon-rise.gif" alt="Moonrise Icon" className="w-6 h-6 mb-1" />
+              <div className="text-gray-800 text-sm">Moonrise</div>
+              {dataFor && !error && (
+                <span className="text-sm font-semibold text-black">
+                  {dataFor.forecast.forecastday[0].astro.moonrise}
+                </span>
+              )}
+            </div>
+
+            {/* Moon Progress Bar */}
+            <div className="relative w-48 h-14 overflow-hidden">
+  <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 50">
+    <path
+      d="M 10,50 A 40,40 0 1 1 90,50"
+      fill="none"
+      stroke="#e5e5e5"
+      strokeWidth="10"
+    />
+    <path
+      d="M 10,50 A 40,40 0 1 1 90,50"
+      fill="none"
+      stroke="#0D92F4"
+      strokeWidth="10"
+      strokeDasharray="126"
+      strokeDashoffset={`${126 - (126 * moonProgress) / 100}`}
+    />
+  </svg>
+</div>
+
+            <div className="flex flex-col items-center">
+              <img src="./images/moon-set.gif" alt="Moonset Icon" className="w-6 h-6 mb-1" />
+              <div className="text-gray-800 text-sm">Moonset</div>
+              {dataFor && !error && (
+                <span className="text-sm font-semibold text-black">
+                  {dataFor.forecast.forecastday[0].astro.moonset}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-         </div>
-         </div>
-        </section>
+    </section>
 
       </div>
 
@@ -555,51 +774,43 @@ function Weather() {
     </div>
   </div>
 
-  <div
+  <div>
+      {dataFor && !error && (
+        <div
         ref={scrollRef}
         className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-        onMouseDown={(e) => handleMouseDown(e, setIsDragging, scrollRef, setStartX, setStartY, setScrollLeft, setScrollTop)}
-        onMouseLeave={() => handleMouseUp(setIsDragging)}
-        onMouseUp={() => handleMouseUp(setIsDragging)}
-        onMouseMove={(e) => handleMouseMove(e, isDragging, scrollRef, startX, startY, scrollLeft, scrollTop)}
+        onMouseDown={handleMouseDown1}
+        onMouseLeave={handleMouseUp1}
+        onMouseUp={handleMouseUp1}
+        onMouseMove={handleMouseMove1}
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
-      {forecastData.map((item, index) => (
-        <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
-          <div className="flex items-center space-x-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-12 h-12 text-gray-500"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"
-              />
-            </svg>
-            <div className="flex flex-col items-start">
-              <span className="text-sm font-semibold text-gray-700">{item.time}</span>
-              <span className="font-semibold text-gray-700">{item.description}</span>
+          {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
+            <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
+              <div className="flex items-center space-x-2">
+                
+                <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon"></img>
+                <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
+  <span className="text-sm font-semibold text-gray-700">{formatTime(hourData.time)}</span>
+  <span className="font-semibold text-gray-700">{hourData.condition.text}</span>
+</div>
+              </div>
+              <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center">
+                  <div className="text-2xl font-semibold text-gray-800">{isFahrenheit ? hourData.temp_f : hourData.temp_c}</div>
+                  <p className="text-xl font-semibold text-gray-600 pr-2 mb-2">°{isFahrenheit ? 'F' : 'C'}</p>
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-gray-800">Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</span>
+                  <span className="text-gray-800">Humidity: {hourData.humidity}%</span>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
-          <div className="flex items-center space-x-2">
-          <div className="flex items-center">
-            <div className="text-2xl  font-semibold text-gray-800 ">{item.temperature}</div>
-            <p className="text-xl font-semibold text-gray-600  pr-2 mb-2">°F</p>
-            </div>
-            <div className="flex flex-col items-start">
-              <span className="text-gray-800">Wind: {item.wind}</span>
-              <span className="text-gray-800">Humidity: {item.humidity}</span>
-            </div>
-          </div>
+          ))}
         </div>
-      ))}
+      )}
+      {error && <p>Error loading weather data: {error.message}</p>}
     </div>
 
 

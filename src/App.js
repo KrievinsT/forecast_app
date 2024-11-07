@@ -1,9 +1,11 @@
 import './App.css';
+import Weather from './Weather'; 
 import { useEffect, useState } from 'react';
 
 function App() {
   const [data, setData] = useState([]);
   const [dataFor, setDataFor] = useState(null);
+ 
   const [error, setError] = useState(null);
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
@@ -205,6 +207,10 @@ function App() {
             </div>
           </div>
         )}
+
+
+   
+
         <p>Powered by WeatherAPI</p>
       </header>
     </div>
