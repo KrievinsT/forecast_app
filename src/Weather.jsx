@@ -30,27 +30,47 @@ function Weather() {
   const [maxDate, setMaxDate] = useState("");
   const [minDate, setMinDate] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
-        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
-          .then(response => response.json())
-          .then(data => {
-            setLocation(data.city || data.locality || data.principalSubdivision);
-          })
-          .catch(error => {
-            console.error('Error fetching city name:', error);
-          });
-      },
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+            .then(response => response.json())
+            .then(data => {
+              setLocation(data.city || data.locality || data.principalSubdivision);
+              setIsLoading(false); // Stop loading when location is found
+            })
+            .catch(error => {
+              console.error('Error fetching city name:', error);
+              setError("Location not found.");
+              setIsLoading(false); // Stop loading if there's an error
+            });
+        },
         error => {
           console.error('Error getting location', error);
-        });
+          setError("Unable to retrieve your location.");
+          setIsLoading(false); // Stop loading if there's an error
+        }
+      );
     } else {
       console.error('Geolocation is not supported by this browser.');
+      setError("Geolocation is not supported.");
+      setIsLoading(false); // Stop loading if geolocation is not supported
     }
   };
+
+  useEffect(() => {
+    getUserLocation(); // Call getUserLocation when the component is mounted
+  }, []);
+
+  const loadingIndicator = isLoading && (
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50 z-50">
+      <div className="w-16 h-16 border-4 border-t-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+    </div>
+  );
 
   useEffect(() => {
     getUserLocation();
@@ -270,6 +290,10 @@ const handleMouseUp2 = () => {
   return (
     <div className={`min-h-screen p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       {/* Header */}
+
+      {loadingIndicator}
+
+
       <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 fixed top-6 left-6 right-6 z-50"> 
     <div className="flex items-center">
         <button className="p-2 mr-3"> 
