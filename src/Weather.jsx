@@ -31,34 +31,58 @@ function Weather() {
   const [tenDaysLater, setTenDaysLater] = useState(new Date());
   const [monthly, setMonthly] = useState(new Date());
 
-  useEffect(() => {
-    getUserLocation();
-    setToday(new Date());
-    setTomorrow(new Date(new Date().setDate(new Date().getDate() + 1)));
-    setTenDaysLater(new Date(new Date().setDate(new Date().getDate() + 10)));
-    setMonthly(new Date(new Date().setDate(new Date().getDate() + 14)));
-  }, []);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
-        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
-          .then(response => response.json())
-          .then(data => {
-            setLocation(data.city || data.locality || data.principalSubdivision);
-          })
-          .catch(error => {
-            console.error('Error fetching city name:', error);
-          });
-      },
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+            .then(response => response.json())
+            .then(data => {
+              setLocation(data.city || data.locality || data.principalSubdivision);
+              setIsLoading(false); // Stop loading when location is found
+            })
+            .catch(error => {
+              console.error('Error fetching city name:', error);
+              setError("Location not found.");
+              setIsLoading(false); // Stop loading if there's an error
+            });
+        },
         error => {
           console.error('Error getting location', error);
-        });
+          setError("Unable to retrieve your location.");
+          setIsLoading(false); // Stop loading if there's an error
+        }
+      );
     } else {
       console.error('Geolocation is not supported by this browser.');
+      setError("Geolocation is not supported.");
+      setIsLoading(false); // Stop loading if geolocation is not supported
     }
   };
+
+  useEffect(() => {
+    getUserLocation(); // Call getUserLocation when the component is mounted
+  }, []);
+
+  const loadingIndicator = isLoading && (
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50 z-50">
+      <div className="w-16 h-16 border-4 border-t-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+    </div>
+  );
+
+  useEffect(() => {
+    getUserLocation();
+    setDate(new Date().toISOString().split('T')[0]);
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 14);
+    setMaxDate(maxDate.toISOString().split('T')[0]);
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() - 3);
+    setMinDate(minDate.toISOString().split('T')[0]);
+  }, []);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
 
@@ -269,9 +293,12 @@ function Weather() {
   return (
     <div className={`min-h-screen p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       {/* Header */}
-      <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 fixed top-6 left-6 right-6 z-50">
-        <div className="flex items-center">
-          <button className="p-2 mr-3">
+
+      {loadingIndicator}
+
+      <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 fixed top-6 left-6 right-6 z-50"> 
+    <div className="flex items-center">
+        <button className="p-2 mr-3"> 
             <svg
               className="w-6 h-6 text-gray-600"
               fill="currentColor"
