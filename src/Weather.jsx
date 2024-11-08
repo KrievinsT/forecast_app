@@ -42,29 +42,29 @@ function Weather() {
             .then(response => response.json())
             .then(data => {
               setLocation(data.city || data.locality || data.principalSubdivision);
-              setIsLoading(false); // Stop loading when location is found
+              setIsLoading(false); 
             })
             .catch(error => {
               console.error('Error fetching city name:', error);
               setError("Location not found.");
-              setIsLoading(false); // Stop loading if there's an error
+              setIsLoading(false); 
             });
         },
         error => {
           console.error('Error getting location', error);
           setError("Unable to retrieve your location.");
-          setIsLoading(false); // Stop loading if there's an error
+          setIsLoading(false); 
         }
       );
     } else {
       console.error('Geolocation is not supported by this browser.');
       setError("Geolocation is not supported.");
-      setIsLoading(false); // Stop loading if geolocation is not supported
+      setIsLoading(false); 
     }
   };
 
   useEffect(() => {
-    getUserLocation(); // Call getUserLocation when the component is mounted
+    getUserLocation(); 
   }, []);
 
   const loadingIndicator = isLoading && (
@@ -327,7 +327,7 @@ function Weather() {
               <input
                 type="text"
                 placeholder="Search Location"
-                className="pl-10 pr-10 py-2 border-2 border-gray-300 rounded-lg text-sm w-full max-w-full min-w-[188px]"
+                className="pl-10 pr-10 py-2 border-2 border-gray-300 rounded-lg text-sm w-full max-w-full min-w-[153px]"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
@@ -506,67 +506,71 @@ function Weather() {
                   <span className="text-gray-800">Visibility</span>
                 </div>
 
-                {data.current && !error && (
-                  <span className="text-2xl font-semibold ml-8"> {isMPH ? data.current.vis_miles + ' mi' : data.current.vis_km + ' km'}</span>
-                )}
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
-                <div className="flex items-center space-x-2">
-                  <img src="./images/air-pump.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Pressure</span>
-                </div>
-                {data.current && !error && (
-                  <span className="text-2xl font-semibold ml-8"> {data.current.pressure_in + ' in'}</span>
-                )}
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
-                <div className="flex items-center space-x-2">
-                  <img src="./images/air-pump.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Pressure</span>
-                </div>
-                {data.current && !error && (
-                  <span className="text-2xl font-semibold ml-8">{data.current.pressure_mb}°</span>
-                )}
-              </div>
-            </section>
+      {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8"> {isMPH ? data.current.vis_miles + ' mi' : data.current.vis_km + ' km'}</span>
+      )}
+        </div>
+      <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+      <div className="flex items-center space-x-2">
+      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
+        <span className="text-gray-800">Pressure</span>
+        </div>
+        {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8"> {data.current.pressure_in + ' in'}</span>
+      )}
+      </div>
+      <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+      <div className="flex items-center space-x-2">
+      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
+        <span className="text-gray-800">Pressure</span>
+        </div>
+        {data.current && !error && (
+        <span className="text-2xl font-semibold ml-8">{data.current.pressure_mb}°</span>
+      )}
+      </div>
+    </section>
 
-            <div className="flex justify-start items-center mb-4 block 982px:hidden ">
-              <section className="w-full rounded-lg pb-6">
-                {/* Button section */}
-                <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                  <div className="flex space-x-6">
-                    <button
-                      onClick={() => setSelectedButton("Today")}
-                      className={`${selectedButton === "Today"
-                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-                        }`}
-                    >
-                      Today
-                    </button>
-                    <button
-                      onClick={() => setSelectedButton("Tomorrow")}
-                      className={`${selectedButton === "Tomorrow"
-                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-                        }`}
-                    >
-                      Tomorrow
-                    </button>
-                    <button
-                      onClick={() => setSelectedButton("10 Days")}
-                      className={`${selectedButton === "10 Days"
-                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-                        }`}
-                    >
-                      10 Days
-                    </button>
-                  </div>
-                  <button className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode ? 'bg-white text-black hover:bg-grey-500' : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}>
-                    See Monthly Cast
-                  </button>
-                </div>
+    {/* Mobile version   weather day selection  */}
+    <div className="flex justify-start items-center mb-4 block 982px:hidden ">
+  <section className="w-full rounded-lg pb-6">
+    {/* Button section */}
+    <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+  <div className="flex space-x-6">
+    <button
+      onClick={() => setSelectedButton("Today")}
+      className={`${
+        selectedButton === "Today"
+          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+      }`}
+    >
+      Today
+    </button>
+    <button
+      onClick={() => setSelectedButton("Tomorrow")}
+      className={`${
+        selectedButton === "Tomorrow"
+          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+      }`}
+    >
+      Tomorrow
+    </button>
+    <button
+      onClick={() => setSelectedButton("10 Days")}
+      className={`${
+        selectedButton === "10 Days"
+          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+      }`}
+    >
+      10 Days
+    </button>
+  </div>
+  <button className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode ? 'bg-white text-black hover:bg-grey-500' : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}>
+    See Monthly Cast
+  </button>
+</div>
 
                 {/* Weather Cards */}
 
