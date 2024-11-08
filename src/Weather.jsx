@@ -17,10 +17,6 @@ function Weather() {
   const [scrollTop2, setScrollTop2] = useState(0);
   const scrollRef = useRef(null);
   const scrollRef2 = useRef(null);
-  const [date, setDate] = useState(null);
-  const [maxDate, setMaxDate] = useState(null);
-  const [minDate, setMinDate] = useState(null);
-
 
   const [data, setData] = useState([]);
   const [dataFor, setDataFor] = useState(null);
@@ -45,29 +41,29 @@ function Weather() {
             .then(response => response.json())
             .then(data => {
               setLocation(data.city || data.locality || data.principalSubdivision);
-              setIsLoading(false); 
+              setIsLoading(false);
             })
             .catch(error => {
               console.error('Error fetching city name:', error);
               setError("Location not found.");
-              setIsLoading(false); 
+              setIsLoading(false);
             });
         },
         error => {
           console.error('Error getting location', error);
           setError("Unable to retrieve your location.");
-          setIsLoading(false); 
+          setIsLoading(false);
         }
       );
     } else {
       console.error('Geolocation is not supported by this browser.');
       setError("Geolocation is not supported.");
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    getUserLocation(); 
+    getUserLocation();
   }, []);
 
   const loadingIndicator = isLoading && (
@@ -77,14 +73,10 @@ function Weather() {
   );
 
   useEffect(() => {
-    getUserLocation();
-    setDate(new Date().toISOString().split('T')[0]);
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 14);
-    setMaxDate(maxDate.toISOString().split('T')[0]);
-    const minDate = new Date();
-    minDate.setDate(minDate.getDate() - 3);
-    setMinDate(minDate.toISOString().split('T')[0]);
+    setToday(new Date());
+    setTomorrow(new Date(new Date().setDate(new Date().getDate() + 1)));
+    setTenDaysLater(new Date(new Date().setDate(new Date().getDate() + 10)));
+    setMonthly(new Date(new Date().setDate(new Date().getDate() + 14)));
   }, []);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
@@ -299,9 +291,9 @@ function Weather() {
 
       {loadingIndicator}
 
-      <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 fixed top-6 left-6 right-6 z-50"> 
-    <div className="flex items-center">
-        <button className="p-2 mr-3"> 
+      <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 fixed top-6 left-6 right-6 z-50">
+        <div className="flex items-center">
+          <button className="p-2 mr-3">
             <svg
               className="w-6 h-6 text-gray-600"
               fill="currentColor"
@@ -509,71 +501,73 @@ function Weather() {
                   <span className="text-gray-800">Visibility</span>
                 </div>
 
-      {data.current && !error && (
-        <span className="text-2xl font-semibold ml-8"> {isMPH ? data.current.vis_miles + ' mi' : data.current.vis_km + ' km'}</span>
-      )}
-        </div>
-      <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
-      <div className="flex items-center space-x-2">
-      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-800">Pressure</span>
-        </div>
-        {data.current && !error && (
-        <span className="text-2xl font-semibold ml-8"> {data.current.pressure_in + ' in'}</span>
-      )}
-      </div>
-      <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
-      <div className="flex items-center space-x-2">
-      <img src="./images/air-pump.gif" alt="Description of the image"  className="size-6"/>
-        <span className="text-gray-800">Pressure</span>
-        </div>
-        {data.current && !error && (
-        <span className="text-2xl font-semibold ml-8">{data.current.pressure_mb}°</span>
-      )}
-      </div>
-    </section>
+                {data.current && !error && (
+                  <span className="text-2xl font-semibold ml-8"> {isMPH ? data.current.vis_miles + ' mi' : data.current.vis_km + ' km'}</span>
+                )}
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+                <div className="flex items-center space-x-2">
+                  <img src="./images/air-pump.gif" alt="Description of the image" className="size-6" />
+                  <span className="text-gray-800">Pressure</span>
+                </div>
+                {data.current && !error && (
+                  <span className="text-2xl font-semibold ml-8"> {data.current.pressure_in + ' in'}</span>
+                )}
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+                <div className="flex items-center space-x-2">
+                  <img src="./images/air-pump.gif" alt="Description of the image" className="size-6" />
+                  <span className="text-gray-800">Pressure</span>
+                </div>
+                {data.current && !error && (
+                  <span className="text-2xl font-semibold ml-8">{data.current.pressure_mb}°</span>
+                )}
+              </div>
+            </section>
 
-    {/* Mobile version   weather day selection  */}
-    <div className="flex justify-start items-center mb-4 block 982px:hidden ">
-  <section className="w-full rounded-lg pb-6">
-    {/* Button section */}
-    <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
-  <div className="flex space-x-6">
-    <button
-      onClick={() => setSelectedButton("Today")}
-      className={`${
-        selectedButton === "Today"
-          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-      }`}
-    >
-      Today
-    </button>
-    <button
-      onClick={() => setSelectedButton("Tomorrow")}
-      className={`${
-        selectedButton === "Tomorrow"
-          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-      }`}
-    >
-      Tomorrow
-    </button>
-    <button
-      onClick={() => setSelectedButton("10 Days")}
-      className={`${
-        selectedButton === "10 Days"
-          ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-          : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-      }`}
-    >
-      10 Days
-    </button>
-  </div>
-  <button className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode ? 'bg-white text-black hover:bg-grey-500' : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}>
-    See Monthly Cast
-  </button>
-</div>
+            {/* Mobile version   weather day selection  */}
+            <div className="flex justify-start items-center mb-4 block 982px:hidden ">
+              <section className="w-full rounded-lg pb-6">
+                {/* Button section */}
+                <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  <div className="flex space-x-6">
+                    <button
+                      onClick={() => setSelectedButton("Today")}
+                      className={`${selectedButton === "Today"
+                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+                        }`}
+                    >
+                      Today
+                    </button>
+                    <button
+                      onClick={() => setSelectedButton("Tomorrow")}
+                      className={`${selectedButton === "Tomorrow"
+                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+                        }`}
+                    >
+                      Tomorrow
+                    </button>
+                    <button
+                      onClick={() => setSelectedButton("10 Days")}
+                      className={`${selectedButton === "10 Days"
+                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+                        }`}
+                    >
+                      10 Days
+                    </button>
+                  </div>
+                  <button
+                  onClick={() => setSelectedButton("monthly")}
+                    className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode
+                      ? 'bg-white text-black hover:bg-grey-500'
+                      : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}
+                  >
+                    See Monthly Cast
+                  </button>
+                </div>
 
                 {/* Weather Cards */}
 
@@ -622,8 +616,6 @@ function Weather() {
                 </div>
               </section>
             </div>
-
-
 
             {/*Sun & Moon summary */}
             <section className="bg-white p-6 rounded-lg shadow-md pb-14">
@@ -752,48 +744,46 @@ function Weather() {
 
           </div>
 
-
-
           {/* weather day selection */}
           <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md hidden 982px:block">
             <div className="flex justify-start items-center mb-4">
               <div className="flex space-x-4">
-                  <button
-                    onClick={() => setSelectedButton("Today")}
-                    className={`pb-1 ${selectedButton === "Today"
-                      ? "text-black border-b-2 border-black font-semibold"
-                      : "text-gray-800"
-                      }`}
-                  >
-                    Today
-                  </button>
-                  <button
-                    onClick={() => setSelectedButton("Tomorrow")}
-                    className={`pb-1 ${selectedButton === "Tomorrow"
-                      ? "text-black border-b-2 border-black font-semibold"
-                      : "text-gray-800"
-                      }`}
-                  >
-                    Tomorrow
-                  </button>
-                  <button
-                    onClick={() => setSelectedButton("10 Days")}
-                    className={`pb-1 ${selectedButton === "10 Days"
-                      ? "text-black border-b-2 border-black font-semibold"
-                      : "text-gray-800"
-                      }`}
-                  >
-                    10 Days
-                  </button>
-                  <button
-                    onClick={() => setSelectedButton("monthly")}
-                    className={`pb-1 ${selectedButton === "monthly"
-                      ? "text-black border-b-2 border-black font-semibold"
-                      : "text-gray-800"
-                      }`}
-                  >
-                    Monthly
-                  </button>
+                <button
+                  onClick={() => setSelectedButton("Today")}
+                  className={`pb-1 ${selectedButton === "Today"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  Today
+                </button>
+                <button
+                  onClick={() => setSelectedButton("Tomorrow")}
+                  className={`pb-1 ${selectedButton === "Tomorrow"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  Tomorrow
+                </button>
+                <button
+                  onClick={() => setSelectedButton("10 Days")}
+                  className={`pb-1 ${selectedButton === "10 Days"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  10 Days
+                </button>
+                <button
+                  onClick={() => setSelectedButton("monthly")}
+                  className={`pb-1 ${selectedButton === "monthly"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  Monthly
+                </button>
               </div>
             </div>
 
@@ -835,8 +825,6 @@ function Weather() {
               )}
               {error && <p>Error loading weather data: {error.message}</p>}
             </div>
-
-
 
             <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2">
               <svg
