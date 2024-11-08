@@ -17,6 +17,9 @@ function Weather() {
   const [scrollTop2, setScrollTop2] = useState(0);
   const scrollRef = useRef(null);
   const scrollRef2 = useRef(null);
+  const [date, setDate] = useState(null);
+  const [maxDate, setMaxDate] = useState(null);
+  const [minDate, setMinDate] = useState(null);
 
 
   const [data, setData] = useState([]);
