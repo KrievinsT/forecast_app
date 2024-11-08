@@ -29,6 +29,7 @@ function Weather() {
   const [tomorrow, setTomorrow] = useState(new Date());
   const [tenDaysLater, setTenDaysLater] = useState(new Date());
   const [monthly, setMonthly] = useState(new Date());
+  const [yesterday, setYesterday] = useState(new Date());
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
@@ -81,6 +82,7 @@ function Weather() {
     setTomorrow(new Date(new Date().setDate(new Date().getDate() + 1)));
     setTenDaysLater(new Date(new Date().setDate(new Date().getDate() + 10)));
     setMonthly(new Date(new Date().setDate(new Date().getDate() + 14)));
+    setYesterday(new Date(new Date().setDate(new Date().getDate() - 1)));
   }, []);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
@@ -123,6 +125,8 @@ function Weather() {
       selectedDate = tenDaysLater.toISOString().split('T')[0];
     } else if (selectedButton === "monthly") {
       selectedDate = monthly.toISOString().split('T')[0];
+    } else if (selectedButton === "yesterday") {
+      selectedDate = yesterday.toISOString().split('T')[0];
     }
   
     const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${selectedDate}&aqi=yes`;
@@ -146,8 +150,6 @@ function Weather() {
       });
   };
   
- 
-
   useEffect(() => {
     if (location && selectedButton) {
       fetchData();
@@ -556,6 +558,15 @@ function Weather() {
                 <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
                   <div className="flex space-x-6">
                     <button
+                      onClick={() => setSelectedButton("yesterday")}
+                      className={`${selectedButton === "yesterday"
+                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
+                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
+                        }`}
+                    >
+                      Yesterday
+                    </button>
+                    <button
                       onClick={() => setSelectedButton("Today")}
                       className={`${selectedButton === "Today"
                         ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
@@ -584,7 +595,7 @@ function Weather() {
                     </button>
                   </div>
                   <button
-                  onClick={() => setSelectedButton("monthly")}
+                    onClick={() => setSelectedButton("monthly")}
                     className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode
                       ? 'bg-white text-black hover:bg-grey-500'
                       : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}
@@ -769,47 +780,56 @@ function Weather() {
           </div>
 
           {/* weather day selection */}
-         <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md hidden 982px:block">
-      <div className="flex justify-start items-center mb-4">
-        <div className="flex space-x-4">
-          <button
-            onClick={() => handleButtonClick("Today")}
-            className={`pb-1 ${selectedButton === "Today"
-              ? "text-black border-b-2 border-black font-semibold"
-              : "text-gray-800"
-            }`}
-          >
-            Today
-          </button>
-          <button
-            onClick={() => handleButtonClick("Tomorrow")}
-            className={`pb-1 ${selectedButton === "Tomorrow"
-              ? "text-black border-b-2 border-black font-semibold"
-              : "text-gray-800"
-            }`}
-          >
-            Tomorrow
-          </button>
-          <button
-            onClick={() => handleButtonClick("10 Days")}
-            className={`pb-1 ${selectedButton === "10 Days"
-              ? "text-black border-b-2 border-black font-semibold"
-              : "text-gray-800"
-            }`}
-          >
-            10 Days
-          </button>
-          <button
-            onClick={() => handleButtonClick("Monthly")}
-            className={`pb-1 ${selectedButton === "Monthly"
-              ? "text-black border-b-2 border-black font-semibold"
-              : "text-gray-800"
-            }`}
-          >
-            Monthly
-          </button>
-        </div>
-      </div>
+          <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md hidden 982px:block">
+            <div className="flex justify-start items-center mb-4">
+              <div className="flex space-x-4">
+              <button
+                  onClick={() => setSelectedButton("yesterday")}
+                  className={`pb-1 ${selectedButton === "yesterday"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  Yesterday
+                </button>
+                <button
+                  onClick={() => setSelectedButton("Today")}
+                  className={`pb-1 ${selectedButton === "Today"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  Today
+                </button>
+                <button
+                  onClick={() => setSelectedButton("Tomorrow")}
+                  className={`pb-1 ${selectedButton === "Tomorrow"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  Tomorrow
+                </button>
+                <button
+                  onClick={() => setSelectedButton("10 Days")}
+                  className={`pb-1 ${selectedButton === "10 Days"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  10 Days
+                </button>
+                <button
+                  onClick={() => setSelectedButton("monthly")}
+                  className={`pb-1 ${selectedButton === "monthly"
+                    ? "text-black border-b-2 border-black font-semibold"
+                    : "text-gray-800"
+                    }`}
+                >
+                  Monthly
+                </button>
+              </div>
+            </div>
 
       <div>
         {dataFor && !error && (
