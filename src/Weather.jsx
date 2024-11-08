@@ -167,7 +167,11 @@ function Weather() {
         setIsLoading(false);
       });
   };
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> da87e6ce8468243aa16314d0869e0e376172ead1
   useEffect(() => {
     if (location && selectedButton) {
       fetchData();
@@ -804,7 +808,11 @@ function Weather() {
           <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md hidden 982px:block">
             <div className="flex justify-start items-center mb-4">
               <div className="flex space-x-4">
+<<<<<<< HEAD
                 <button
+=======
+              <button
+>>>>>>> da87e6ce8468243aa16314d0869e0e376172ead1
                   onClick={() => setSelectedButton("yesterday")}
                   className={`pb-1 ${selectedButton === "yesterday"
                     ? "text-black border-b-2 border-black font-semibold"
@@ -849,6 +857,44 @@ function Weather() {
                 >
                   Monthly
                 </button>
+<<<<<<< HEAD
+=======
+              </div>
+            </div>
+
+      <div>
+        {dataFor && !error && (
+          <div
+            key={forecastKey} // Using the key to re-trigger the animation
+            ref={scrollRef}
+            className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} animate-fadeIn`}
+            onMouseDown={handleMouseDown1}
+            onMouseLeave={handleMouseUp1}
+            onMouseUp={handleMouseUp1}
+            onMouseMove={handleMouseMove1}
+            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          >
+            {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
+              <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
+                <div className="flex items-center space-x-2">
+                  <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon"></img>
+                  <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
+                    <span className="text-sm font-semibold text-gray-700">{formatTime(hourData.time)}</span>
+                    <span className="font-semibold text-gray-700">{hourData.condition.text}</span>
+                  </div>
+                </div>
+                <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center">
+                    <div className="text-2xl font-semibold text-gray-800">{isFahrenheit ? hourData.temp_f : hourData.temp_c}</div>
+                    <p className="text-xl font-semibold text-gray-600 pr-2 mb-2">°{isFahrenheit ? 'F' : 'C'}</p>
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-gray-800">Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</span>
+                    <span className="text-gray-800">Humidity: {hourData.humidity}%</span>
+                  </div>
+                </div>
+>>>>>>> da87e6ce8468243aa16314d0869e0e376172ead1
               </div>
             </div>
 
