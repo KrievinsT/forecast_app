@@ -157,7 +157,7 @@ function Weather() {
       selectedDate = tomorrow.toISOString().split('T')[0];
     } else if (selectedButton === "10 Days") {
       selectedDate = tenDaysLater.toISOString().split('T')[0];
-    } else if (selectedButton === "monthly") {
+    } else if (selectedButton === "Monthly") {
       selectedDate = monthly.toISOString().split('T')[0];
     }
 
@@ -631,7 +631,7 @@ function Weather() {
                     </button>
                   </div>
                   <button
-                  onClick={() => setSelectedButton("monthly")}
+                  onClick={() => setSelectedButton("Monthly")}
                     className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode
                       ? 'bg-white text-black hover:bg-grey-500'
                       : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}
