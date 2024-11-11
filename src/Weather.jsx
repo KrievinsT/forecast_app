@@ -27,7 +27,6 @@ function Weather() {
   const [isMPH, setIsMPH] = useState(false);
   const [today, setToday] = useState(new Date());
   const [tomorrow, setTomorrow] = useState(new Date());
-  const [tenDaysLater, setTenDaysLater] = useState(new Date());
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
@@ -59,7 +58,7 @@ function Weather() {
       navigator.geolocation.getCurrentPosition(
         position => {
           const { latitude, longitude } = position.coords;
-          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`) //gets closest city from gotten coordinates
             .then(response => response.json())
             .then(data => {
               setLocation(data.city || data.locality || data.principalSubdivision);
@@ -98,10 +97,9 @@ function Weather() {
   useEffect(() => {
     setToday(new Date());
     setTomorrow(new Date(new Date().setDate(new Date().getDate() + 1)));
-    setTenDaysLater(new Date(new Date().setDate(new Date().getDate() + 10)));
   }, []);
 
-  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
+  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`; //gets current weather data from provided city
 
   const handleError = (error) => {
     setError(error);
@@ -149,17 +147,17 @@ function Weather() {
     if (!location) return;
     setIsLoading(true);
 
-    let urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
+    let urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`; // gets future and history weather data from provided city
     let selectedDate = "";
 
     if (selectedButton === "Today") {
       selectedDate = today.toISOString().split('T')[0];
-      urlFor += `&dt=${selectedDate}`;
+      urlFor += `&dt=${selectedDate}`; //gives date parameter to forecast API url
     } else if (selectedButton === "Tomorrow") {
       selectedDate = tomorrow.toISOString().split('T')[0];
-      urlFor += `&dt=${selectedDate}`;
+      urlFor += `&dt=${selectedDate}`; //gives date parameter to forecast API url
     } else if (selectedButton === "10 Days") {
-      urlFor += `&days=12`;
+      urlFor += `&days=12`; //gives amount of days parameter to forecast API url 
     }
 
     return fetch(urlFor)
