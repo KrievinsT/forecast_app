@@ -29,12 +29,29 @@ function Weather() {
   const [tomorrow, setTomorrow] = useState(new Date());
   const [tenDaysLater, setTenDaysLater] = useState(new Date());
   const [monthly, setMonthly] = useState(new Date());
-  const [yesterday, setYesterday] = useState(new Date());
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [liveTime, setLiveTime] = useState("");
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
+
+  useEffect(() => {
+    if (data.location) {
+      setLiveTime(data.location.localtime);
+      const intervalId = setInterval(() => {
+        const currentTime = new Date().toLocaleString("en-US", {
+          timeZone: data.location.tz_id,
+          hour12: true,
+          hour: 'numeric',  // Use 'numeric' instead of '2-digit' to avoid leading 0
+          minute: '2-digit',
+        });
+        setLiveTime(currentTime);  
+      }, 1000);
+  
+      return () => clearInterval(intervalId);  
+    }
+  }, [data.location]);
 
   const getUserLocation = () => {
 
@@ -84,7 +101,6 @@ function Weather() {
     setTomorrow(new Date(new Date().setDate(new Date().getDate() + 1)));
     setTenDaysLater(new Date(new Date().setDate(new Date().getDate() + 10)));
     setMonthly(new Date(new Date().setDate(new Date().getDate() + 14)));
-    setYesterday(new Date(new Date().setDate(new Date().getDate() - 1)));
   }, []);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
@@ -143,8 +159,6 @@ function Weather() {
       selectedDate = tenDaysLater.toISOString().split('T')[0];
     } else if (selectedButton === "monthly") {
       selectedDate = monthly.toISOString().split('T')[0];
-    } else if (selectedButton === "yesterday") {
-      selectedDate = yesterday.toISOString().split('T')[0];
     }
 
     const urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&dt=${selectedDate}&aqi=yes`;
@@ -330,12 +344,12 @@ function Weather() {
   };
 
   return (
-    <div className={`min-h-screen p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+    <div className={`min-h-screen max-w-full p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       {/* Header */}
 
       {loadingIndicator}
 
-      <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 fixed top-6 left-6 right-6 z-50">
+    <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 sticky top-6 inset-x-0 mx-auto z-50">
         <div className="flex items-center">
           <button className="p-2 mr-3">
             <svg
@@ -352,7 +366,7 @@ function Weather() {
               />
             </svg>
           </button>
-          <h1 className="text-2xl font-semibold text-blue-500 mr-3 cursor-pointer">SkyCast</h1>
+          <h1 className="text-2xl font-semibold text-blue-500 mr-3 cursor-pointer hidden 387px:block">SkyCast</h1>
 
           <img src="./images/google-maps.gif" alt="Description of the image" className="w-6 h-6 ml-4 md:ml-6 lg:ml-8 xl:ml-14 hidden 890px:block" />
           {data.current && !error && (
@@ -366,7 +380,7 @@ function Weather() {
               <input
                 type="text"
                 placeholder="Search Location"
-                className="pl-10 pr-10 py-2 border-2 border-gray-300 rounded-lg text-sm w-full max-w-full min-w-[153px]"
+                className="pl-10 pr-10 py-2 border-2 border-gray-300 rounded-lg text-sm w-full max-w-full min-w-[153px] "
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
@@ -430,13 +444,18 @@ function Weather() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-full">
+          <button className="p-2 rounded-full hidden 440px:block">
             {/* Icon for notifications */}
 
-            <img src="./images/notification.gif" alt="Description of the image" className="size-7 text-gray-700 hidden 440px:block" />
+            <img src="./images/notification.gif" alt="Description of the image" className="size-7 text-gray-700 " />
           </button>
 
-          <img src="./images/profile-pic.jpg" alt="Description of the image" className=" rounded-full size-9 block 890px:hidden hidden 530px:block " />
+          <img 
+            src="./images/profile-pic.jpg" 
+            alt="Description of the image" 
+            className="rounded-full size-9 hidden max-890:block max-530:hidden"
+          />
+
 
           <button className="p-2 rounded-full hidden 890px:block">
             {/* Icon for settings */}
@@ -447,70 +466,75 @@ function Weather() {
         </div>
       </header>
 
-      <main className="mt-24">
+      <main className="mt-10">
         <div className="flex max-w-[100%] mx-auto">
           <div className="w-[60%] ${isDarkMode ? 'bg-gray-800 ' : 'bg-gray-100 '}`} pe-8 responsive-width">
             {/* Current Weather */}
             <section className="bg-white p-6 rounded-lg shadow-md mb-6">
-              <div className="flex justify-between">
-                <div>
-                  <div className="text-sm text-gray-800">Current Weather</div>
-                  {/* Current time*/}
+  <div className="flex flex-wrap justify-between">
+    <div className="w-full sm:w-auto">
+      <div className="text-sm text-gray-800">Current Weather</div>
+      {/* Current time */}
+      {data.current && !error && (
+        <div className="text-lg font-medium text-black-700">Local time: {liveTime}</div>
+      )}
+      <div className="flex items-center">
+        {/* Current temperature */}
+        {data.current && !error && (
+          <img className="w-12 h-12" src={data.current.condition.icon} alt="Weather Icon" />
+        )}
+        {data.current && !error && (
+          <div className="text-5xl font-semibold text-black pl-3">
+            {isFahrenheit ? data.current.temp_f : data.current.temp_c}
+          </div>
+        )}
+        {data.current && !error && (
+          <p className="text-2xl font-semibold text-gray-600 pr-2 mb-2">
+            °{isFahrenheit ? 'F' : 'C'}
+          </p>
+        )}
+        <div className="flex flex-col text-sm text-gray-500 pl-6">
+          {/* Current condition */}
+          {data.current && !error && (
+            <div className="text-gray-800">{data.current.condition.text}</div>
+          )}
+          {data.current && !error && (
+            <div className="text-gray-900">
+              Feels Like {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°
+              {isFahrenheit ? 'F' : 'C'}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
 
-                  {data.current && !error && (
-                    <div className="text-lg font-medium text-black-700">
-                      Local time: {liveTime}
-                    </div>
-                  )}
+    <div className="w-full 440px:w-auto mt-4 sm:mt-0 text-gray-600">
+  {!error && data.current && (
+    <div className="text-gray-900">
+      <select
+        onChange={(e) => {
+          const value = e.target.value;
+          setIsFahrenheit(value === 'Fahrenheit');
+          setIsMPH(value === 'Fahrenheit');
+        }}
+        value={isFahrenheit ? 'Fahrenheit' : 'Celsius'}
+        className="cursor-pointer 440px:w-auto max-w-full"
+      >
+        <option value="Celsius">Celsius and Kilometers</option>
+        <option value="Fahrenheit">Fahrenheit and Miles</option>
+      </select>
+    </div>
+  )}
+</div>
+  </div>
+  
+  {data.current && !error && (
+    <p className="mt-4 text-gray-800">
+      Current wind direction: {data.current.wind_dir}
+    </p>
+  )}
+</section>
 
-                  <div className="flex items-center">
-                    {/* Current tempeture*/}
-
-                    {data.current && !error && (
-                      <img className="w-12 h-12" src={data.current.condition.icon} alt="Weather Icon"></img>
-                    )}
-                    {data.current && !error && (
-                      <div className="text-5xl font-semibold text-black  pl-3">{isFahrenheit ? data.current.temp_f : data.current.temp_c}</div>
-                    )}
-                    {data.current && !error && (
-                      <p className="text-2xl font-semibold text-gray-600 pr-2 mb-2">°{isFahrenheit ? 'F' : 'C'}</p>
-                    )}
-                    <div className="flex flex-col text-sm text-gray-500 pl-6">
-                      {/* Current condition*/}
-                      {data.current && !error && (
-                        <div className="text-gray-800">{data.current.condition.text}</div>
-                      )}
-                      {data.current && !error && (
-                        <div className="text-gray-900">Feels Like {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°{isFahrenheit ? 'F' : 'C'}</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-gray-600">
-                  {!error && data.current && (
-                    <div className="text-gray-900">
-                      <select
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setIsFahrenheit(value === 'Fahrenheit');
-                          setIsMPH(value === 'Fahrenheit');
-                        }}
-                        value={isFahrenheit ? 'Fahrenheit' : 'Celsius'}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <option value="Celsius">Celsius and Kilometers</option>
-                        <option value="Fahrenheit">Fahrenheit and Miles</option>
-                      </select>
-                    </div>
-                  )}
-                </div>
-              </div>
-              {data.current && !error && (
-                <p className="mt-4 text-gray-800">
-                  Current wind direction: {data.current.wind_dir}
-                </p>
-              )}
-            </section>
 
             {/* Statistical Details */}
             <section className="grid grid-cols-2 gap-6 lg:grid-cols-3 mb-6">
@@ -579,15 +603,6 @@ function Weather() {
                 <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
                   <div className="flex space-x-6">
                     <button
-                      onClick={() => setSelectedButton("yesterday")}
-                      className={`${selectedButton === "yesterday"
-                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-                        }`}
-                    >
-                      Yesterday
-                    </button>
-                    <button
                       onClick={() => setSelectedButton("Today")}
                       className={`${selectedButton === "Today"
                         ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
@@ -616,12 +631,13 @@ function Weather() {
                     </button>
                   </div>
                   <button
-                    onClick={() => setSelectedButton("monthly")}
+                  onClick={() => setSelectedButton("monthly")}
                     className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode
                       ? 'bg-white text-black hover:bg-grey-500'
                       : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}
                   >
-                    See Monthly Cast
+                     <span className="hidden 425px:block">See Monthly Cast</span>
+                     <span className="425px:hidden">Monthly</span>
                   </button>
                 </div>
 
@@ -694,7 +710,7 @@ function Weather() {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-4 pt-4 xsm:pt-0">
+                <div className="flex items-center space-x-4 pt-4 xsm:pt-0 max440:w-[70%]">
                     <div className="flex flex-col items-center">
                       <img src="./images/field.gif" alt="Sunrise Icon" className="w-6 h-6 mb-1" />
                       <div className="text-gray-800 text-sm">Sunrise</div>
@@ -753,7 +769,7 @@ function Weather() {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-4 pt-6 xsm:pt-0">
+                  <div className="flex items-center space-x-4 pt-6 xsm:pt-0 max440:w-[70%]">
                     <div className="flex flex-col items-center">
                       <img src="./images/moon-rise.gif" alt="Moonrise Icon" className="w-6 h-6 mb-1" />
                       <div className="text-gray-800 text-sm">Moonrise</div>
@@ -801,56 +817,47 @@ function Weather() {
           </div>
 
           {/* weather day selection */}
-          <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md hidden 982px:block">
-            <div className="flex justify-start items-center mb-4">
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => setSelectedButton("yesterday")}
-                  className={`pb-1 ${selectedButton === "yesterday"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  Yesterday
-                </button>
-                <button
-                  onClick={() => setSelectedButton("Today")}
-                  className={`pb-1 ${selectedButton === "Today"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  Today
-                </button>
-                <button
-                  onClick={() => setSelectedButton("Tomorrow")}
-                  className={`pb-1 ${selectedButton === "Tomorrow"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  Tomorrow
-                </button>
-                <button
-                  onClick={() => setSelectedButton("10 Days")}
-                  className={`pb-1 ${selectedButton === "10 Days"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  10 Days
-                </button>
-                <button
-                  onClick={() => setSelectedButton("monthly")}
-                  className={`pb-1 ${selectedButton === "monthly"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  Monthly
-                </button>
-              </div>
-            </div>
+         <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md hidden 982px:block">
+      <div className="flex justify-start items-center mb-4">
+        <div className="flex space-x-4">
+          <button
+            onClick={() => handleButtonClick("Today")}
+            className={`pb-1 ${selectedButton === "Today"
+              ? "text-black border-b-2 border-black font-semibold"
+              : "text-gray-800"
+            }`}
+          >
+            Today
+          </button>
+          <button
+            onClick={() => handleButtonClick("Tomorrow")}
+            className={`pb-1 ${selectedButton === "Tomorrow"
+              ? "text-black border-b-2 border-black font-semibold"
+              : "text-gray-800"
+            }`}
+          >
+            Tomorrow
+          </button>
+          <button
+            onClick={() => handleButtonClick("10 Days")}
+            className={`pb-1 ${selectedButton === "10 Days"
+              ? "text-black border-b-2 border-black font-semibold"
+              : "text-gray-800"
+            }`}
+          >
+            10 Days
+          </button>
+          <button
+            onClick={() => handleButtonClick("Monthly")}
+            className={`pb-1 ${selectedButton === "Monthly"
+              ? "text-black border-b-2 border-black font-semibold"
+              : "text-gray-800"
+            }`}
+          >
+            Monthly
+          </button>
+        </div>
+      </div>
 
             <div>
               {dataFor && !error && (
