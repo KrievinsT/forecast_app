@@ -43,7 +43,7 @@ function Weather() {
         const currentTime = new Date().toLocaleString("en-US", {
           timeZone: data.location.tz_id,
           hour12: true,
-          hour: 'numeric',  // Use 'numeric' instead of '2-digit' to avoid leading 0
+          hour: 'numeric', 
           minute: '2-digit',
         });
         setLiveTime(currentTime);  
