@@ -28,7 +28,6 @@ function Weather() {
   const [today, setToday] = useState(new Date());
   const [tomorrow, setTomorrow] = useState(new Date());
   const [tenDaysLater, setTenDaysLater] = useState(new Date());
-  const [monthly, setMonthly] = useState(new Date());
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
@@ -100,7 +99,6 @@ function Weather() {
     setToday(new Date());
     setTomorrow(new Date(new Date().setDate(new Date().getDate() + 1)));
     setTenDaysLater(new Date(new Date().setDate(new Date().getDate() + 10)));
-    setMonthly(new Date(new Date().setDate(new Date().getDate() + 14)));
   }, []);
 
   const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
@@ -162,9 +160,6 @@ function Weather() {
       urlFor += `&dt=${selectedDate}`;
     } else if (selectedButton === "10 Days") {
       urlFor += `&days=12`;
-    } else if (selectedButton === "Monthly") {
-      selectedDate = monthly.toISOString().split('T')[0];
-      urlFor += `&dt=${selectedDate}`;
     }
 
     return fetch(urlFor)
@@ -637,15 +632,6 @@ function Weather() {
                       10 Days
                     </button>
                   </div>
-                  <button
-                    onClick={() => setSelectedButton("Monthly")}
-                    className={`px-4 py-2 rounded-lg transition-colors duration-300 ${isDarkMode
-                      ? 'bg-white text-black hover:bg-grey-500'
-                      : 'dark:bg-gray-800  text-white hover:bg-gray-600'}`}
-                  >
-                    <span className="hidden 425px:block">See Monthly Cast</span>
-                    <span className="425px:hidden">Monthly</span>
-                  </button>
                 </div>
 
                 {/* Weather Cards */}
@@ -852,15 +838,6 @@ function Weather() {
                     }`}
                 >
                   10 Days
-                </button>
-                <button
-                  onClick={() => handleButtonClick("Monthly")}
-                  className={`pb-1 ${selectedButton === "Monthly"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  Monthly
                 </button>
               </div>
             </div>
