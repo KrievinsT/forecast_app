@@ -637,7 +637,7 @@ function Weather() {
                 {/* Weather Cards */}
 
                 <div>
-                  {dataFor && !error && (
+                  {(selectedButton === "Today" || selectedButton === "Tomorrow") && dataFor && !error && (
                     <div
                       ref={scrollRef2}
                       className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
@@ -673,6 +673,53 @@ function Weather() {
                           </div>
                           <p className="text-sm text-gray-800">Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</p>
                           <p className="text-sm text-gray-800">Humidity: {hourData.humidity}%</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {selectedButton === "10 Days" && dataFor && !error && (
+                    <div
+                      ref={scrollRef2}
+                      className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
+                      onMouseDown={(e) =>
+                        handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)
+                      }
+                      onMouseLeave={() => handleMouseUp(setIsDragging2)}
+                      onMouseUp={() => handleMouseUp(setIsDragging2)}
+                      onMouseMove={(e) =>
+                        handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)
+                      }
+                      style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
+                    >
+                      {dataFor.forecast.forecastday.slice(2).map((dayData, index) => (
+                        <div
+                          key={index}
+                          className="p-4 bg-white rounded-lg min-w-[150px] text-start shadow-md"
+                        >
+                          <div className="flex justify-start">
+                            <img
+                              className="w-12 h-12"
+                              src={dayData.day.condition.icon}
+                              alt="Weather Icon"
+                            />
+                          </div>
+                          <p className="mt-2 text-sm text-gray-800">
+                            {new Date(dayData.date).toLocaleDateString('en-US', { weekday: 'long' })}
+                          </p>
+                          <p className="mt-1 text-sm font-semibold">{dayData.date}</p>
+                          <div className="flex items-center">
+                            <p className="text-3xl font-bold">
+                              {isFahrenheit ? dayData.day.avgtemp_f : dayData.day.avgtemp_c}
+                            </p>
+                            <p className="text-xl font-semibold text-gray-600 mb-2">
+                              °{isFahrenheit ? 'F' : 'C'}
+                            </p>
+                          </div>
+                          <p className="text-sm text-gray-800">
+                            Wind: {isMPH ? dayData.day.maxwind_mph : dayData.day.maxwind_kph} {isMPH ? 'mi/h' : 'km/h'}
+                          </p>
+                          <p className="text-sm text-gray-800">Humidity: {dayData.day.avghumidity}%</p>
                         </div>
                       ))}
                     </div>
