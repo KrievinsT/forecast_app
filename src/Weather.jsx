@@ -27,11 +27,15 @@ function Weather() {
   const [isMPH, setIsMPH] = useState(false);
   const [today, setToday] = useState(new Date());
   const [tomorrow, setTomorrow] = useState(new Date());
+  const [tenDaysLater, setTenDaysLater] = useState(new Date());
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [liveTime, setLiveTime] = useState("");
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+ 
+  
 
   useEffect(() => {
     if (data.location) {
@@ -57,7 +61,7 @@ function Weather() {
       navigator.geolocation.getCurrentPosition(
         position => {
           const { latitude, longitude } = position.coords;
-          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`) //gets closest city from gotten coordinates
+          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
             .then(response => response.json())
             .then(data => {
               setLocation(data.city || data.locality || data.principalSubdivision);
@@ -96,30 +100,17 @@ function Weather() {
   useEffect(() => {
     setToday(new Date());
     setTomorrow(new Date(new Date().setDate(new Date().getDate() + 1)));
+    setTenDaysLater(new Date(new Date().setDate(new Date().getDate() + 10)));
   }, []);
 
-  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`; //gets current weather data from provided city
+  const url = `https://api.weatherapi.com/v1/current.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
 
   const handleError = (error) => {
     setError(error);
 
   };
 
-  useEffect(() => {
-    if (data.location) {
-      setLiveTime(data.location.localtime);
-      const intervalId = setInterval(() => {
-        const currentTime = new Date().toLocaleString("en-US", {
-          timeZone: data.location.tz_id,
-          hour12: true,
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-        setLiveTime(currentTime);
-      }, 1000);
-      return () => clearInterval(intervalId);
-    }
-  }, [data.location]);
+  
 
   const fetchData = () => {
     if (!location) return;
@@ -146,17 +137,17 @@ function Weather() {
     if (!location) return;
     setIsLoading(true);
 
-    let urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`; // gets future and history weather data from provided city
+    let urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
     let selectedDate = "";
 
     if (selectedButton === "Today") {
       selectedDate = today.toISOString().split('T')[0];
-      urlFor += `&dt=${selectedDate}`; //gives date parameter to forecast API url
+      urlFor += `&dt=${selectedDate}`;
     } else if (selectedButton === "Tomorrow") {
       selectedDate = tomorrow.toISOString().split('T')[0];
-      urlFor += `&dt=${selectedDate}`; //gives date parameter to forecast API url
+      urlFor += `&dt=${selectedDate}`;
     } else if (selectedButton === "10 Days") {
-      urlFor += `&days=12`; //gives amount of days parameter to forecast API url
+      urlFor += `&days=12`;
     }
 
     return fetch(urlFor)
@@ -305,6 +296,47 @@ function Weather() {
   };
 
 
+
+  const [forecastKey, setForecastKey] = useState("Today");
+  const [selectedDayData, setSelectedDayData] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  
+const handleButtonClick = (day) => {
+  setSelectedButton(day);
+  setForecastKey(day);
+
+
+  if (day === "Today" || day === "Tomorrow") {
+    setSelectedDay(null);         
+    setSelectedDayData(null);      
+    setIsPopupOpen(false);         
+  } else if (day === "10 Days") {
+    setIsPopupOpen(false);         
+  }
+};
+
+const handleDayClick = (dayIndex) => { 
+
+  if (selectedButton === "Today" || selectedButton === "Tomorrow") {
+    setIsPopupOpen(false);        
+    setSelectedDay(null);          
+    setSelectedDayData(null);     
+  } else if (selectedDay === dayIndex) {
+    
+    setIsPopupOpen(false);
+    setSelectedDay(null);
+    setSelectedDayData(null);
+  } else {
+   
+    setSelectedDay(dayIndex);
+    setSelectedDayData(dataFor.forecast.forecastday[dayIndex]?.hour || []);
+    setIsPopupOpen(true);
+  }
+};
+
+  
   const [sunProgress, setSunProgress] = useState(0);
   const [moonProgress, setMoonProgress] = useState(0);
 
@@ -336,25 +368,98 @@ function Weather() {
   }, []);
 
 
-  const [forecastKey, setForecastKey] = useState("Today");
+  const WeatherPopup = ({ data, onClose}) => {
+    const [isVisible, setIsVisible] = useState(true);
+  
+    const handleClose = () => {
+      setIsVisible(false); 
+      setTimeout(() => {
+        setSelectedDay(null); 
+        onClose(); 
+      }, 300); 
+    };
+  
 
+    return (
+      <div className="fixed inset-0 flex items-center justify-start">
+        <div
+          className={`fixed top-0 left-0 w-[59%] h-full bg-black ${isVisible ? 'bg-opacity-75 animate-slideIn' : 'bg-opacity-0'} transition-opacity duration-300`}
+        >
+        </div>
 
-  const handleButtonClick = (buttonName) => {
-    setSelectedButton(buttonName);
-    setForecastKey(buttonName);
+        <div
+          className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-700'} 
+                      p-4 rounded-lg shadow-lg w-[55%] h-3/4 relative ml-[2%] mt-[4%]
+                      ${isVisible ? 'animate-slideIn' : 'animate-slideOut'}`}
+        >
+          <button onClick={handleClose} className={`absolute ${isDarkMode ? 'text-white' : 'text-black'} top-0 right-2 text-3xl`}>
+            &times;
+          </button>
+  
+          {/* Header Container */}
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-blue-500 text-2xl font-semibold cursor-pointer hidden sm:block">VTDT Sky</h1>
+            <h2 className="text-xl font-bold text-center flex-grow">Hourly Forecast</h2>
+          </div>
+  
+          {/* Content area */}
+          <div className="overflow-y-auto h-[90%] pr-2 custom-scrollbar">
+            {data.map((hourData, index) => (
+              <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-500 pb-2 pt-2">
+                <div className="flex items-center space-x-2">
+                  <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon" />
+                  <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
+                    <span className="text-sm font-semibold">
+                      {formatTime(hourData.time)}
+                    </span>
+                    <span className="font-semibold">
+                      {hourData.condition.text}
+                    </span>
+                  </div>
+                </div>
+                <div className="h-12 border-l-2 border-gray-500 mx-2"></div>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center">
+                    <div className={`text-2xl ${isDarkMode ? 'text-white' : 'text-gray-800'} font-semibold`}>
+                    {isFahrenheit ? hourData.temp_f : hourData.temp_c}
+                    </div>
+                    <p className={`${isDarkMode ? 'text-white' : 'text-gray-600'} text-xl font-semibold pr-2 mb-2`}>
+              °{isFahrenheit ? 'F' : 'C'}
+            </p>
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm">
+                    {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}
+                    </span>
+                    <span className="text-sm">
+                      Humidity: {hourData.humidity}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   };
+  
+  
+  
+  
+  
 
   return (
-    <div className={`min-h-screen max-w-full p-6 relative ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+    <div className={`min-h-screen pl-6 pr-6 max-w-full ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       {/* Header */}
 
       {loadingIndicator}
 
-      <header className="flex justify-between items-center bg-white shadow-md rounded-lg p-4 sticky top-6 inset-x-0 mx-auto z-50">
+      <header className={`flex justify-between items-center ${isDarkMode ? 'bg-gray-600' : 'bg-white '}  shadow-md rounded-b-lg px-4 py-6 sticky top-0 inset-x-0 mx-auto z-50`}>
         <div className="flex items-center">
           <button className="p-2 mr-3">
             <svg
-              className="w-6 h-6 text-gray-600"
+              className={`${isDarkMode ? 'text-white' : 'text-gray-600'} w-6 h-6 `}
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -367,11 +472,11 @@ function Weather() {
               />
             </svg>
           </button>
-          <h1 className="text-2xl font-semibold text-blue-500 mr-3 cursor-pointer hidden 387px:block">SkyCast</h1>
+          <h1 className="text-2xl font-semibold text-blue-500 mr-3 cursor-pointer hidden 387px:block">VTDT Sky</h1>
 
           <img src="./images/google-maps.gif" alt="Description of the image" className="w-6 h-6 ml-4 md:ml-6 lg:ml-8 xl:ml-14 hidden 890px:block" />
           {data.current && !error && (
-            <span className="text-gray-800 ml-1 hidden 890px:block">{data.location.name}, {data.location.country}</span>
+            <span className={`${isDarkMode ? 'text-white' : 'text-gray-800'} text-gray-800 ml-1 hidden 890px:block`}>{data.location.name}, {data.location.country}</span>
           )}
         </div>
         <div className="flex items-center space-x-4">
@@ -451,11 +556,12 @@ function Weather() {
             <img src="./images/notification.gif" alt="Description of the image" className="size-7 text-gray-700 " />
           </button>
 
-          <img
-            src="./images/profile-pic.jpg"
-            alt="Description of the image"
+          <img 
+            src="./images/profile-pic.jpg" 
+            alt="Description of the image" 
             className="rounded-full size-9 hidden max-890:block max-530:hidden"
           />
+
 
           <button className="p-2 rounded-full hidden 890px:block">
             {/* Icon for settings */}
@@ -470,124 +576,126 @@ function Weather() {
         <div className="flex max-w-[100%] mx-auto">
           <div className="w-[60%] ${isDarkMode ? 'bg-gray-800 ' : 'bg-gray-100 '}`} pe-8 responsive-width">
             {/* Current Weather */}
-            <section className="bg-white p-6 rounded-lg shadow-md mb-6">
-              <div className="flex flex-wrap justify-between">
-                <div className="w-full sm:w-auto">
-                  <div className="text-sm text-gray-800">Current Weather</div>
-                  {/* Current time */}
-                  {data.current && !error && (
-                    <div className="text-lg font-medium text-black-700">Local time: {liveTime}</div>
-                  )}
-                  <div className="flex items-center">
-                    {/* Current temperature */}
-                    {data.current && !error && (
-                      <img className="w-12 h-12" src={data.current.condition.icon} alt="Weather Icon" />
-                    )}
-                    {data.current && !error && (
-                      <div className="text-5xl font-semibold text-black pl-3">
-                        {isFahrenheit ? data.current.temp_f : data.current.temp_c}
-                      </div>
-                    )}
-                    {data.current && !error && (
-                      <p className="text-2xl font-semibold text-gray-600 pr-2 mb-2">
-                        °{isFahrenheit ? 'F' : 'C'}
-                      </p>
-                    )}
-                    <div className="flex flex-col text-sm text-gray-500 pl-6">
-                      {/* Current condition */}
-                      {data.current && !error && (
-                        <div className="text-gray-800">{data.current.condition.text}</div>
-                      )}
-                      {data.current && !error && (
-                        <div className="text-gray-900">
-                          Feels Like {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°
-                          {isFahrenheit ? 'F' : 'C'}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+            <section className={`${isDarkMode ? 'bg-gray-600' : 'bg-white'} p-6 rounded-lg shadow-md mb-6`}>
+  <div className="flex flex-wrap justify-between">
+    <div className="w-full sm:w-auto">
+      <div className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Current Weather</div>
+      {data.current && !error && (
+        <div className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-black-700'}`}>Local time: {liveTime}</div>
+      )}
+      <div className="flex items-center">
+        {data.current && !error && (
+          <img className="w-12 h-12" src={data.current.condition.icon} alt="Weather Icon" />
+        )}
+        {data.current && !error && (
+          <div className={`text-5xl font-semibold ${isDarkMode ? 'text-white' : 'text-black'} pl-3`}>
+            {isFahrenheit ? data.current.temp_f : data.current.temp_c}
+          </div>
+        )}
+        {data.current && !error && (
+          <p className={`text-2xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}  pr-2 mb-2`}>
+            °{isFahrenheit ? 'F' : 'C'}
+          </p>
+        )}
+        <div className="flex flex-col text-sm text-gray-500 pl-6">
+          {data.current && !error && (
+            <div className={`${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{data.current.condition.text}</div>
+          )}
+          {data.current && !error && (
+            <div className={`${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Feels Like {isFahrenheit ? data.current.feelslike_f : data.current.feelslike_c}°
+              {isFahrenheit ? 'F' : 'C'}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
 
-                <div className="w-full 440px:w-auto mt-4 sm:mt-0 text-gray-600">
-                  {!error && data.current && (
-                    <div className="text-gray-900">
-                      <select
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setIsFahrenheit(value === 'Fahrenheit');
-                          setIsMPH(value === 'Fahrenheit');
-                        }}
-                        value={isFahrenheit ? 'Fahrenheit' : 'Celsius'}
-                        className="cursor-pointer 440px:w-auto max-w-full"
-                      >
-                        <option value="Celsius">Celsius and Kilometers</option>
-                        <option value="Fahrenheit">Fahrenheit and Miles</option>
-                      </select>
-                    </div>
-                  )}
-                </div>
-              </div>
+    {/* Updated select section for dark mode */}
+    <div className={`w-full 440px:w-auto mt-4 sm:mt-0 ${isDarkMode ? 'text-white' : 'text-gray-600'}`}>
+      {!error && data.current && (
+        <div className={`${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <select
+            onChange={(e) => {
+              const value = e.target.value;
+              setIsFahrenheit(value === 'Fahrenheit');
+              setIsMPH(value === 'Fahrenheit');
+            }}
+            value={isFahrenheit ? 'Fahrenheit' : 'Celsius'}
+            className={`cursor-pointer 440px:w-auto max-w-full rounded-lg px-2 py-1 border ${
+              isDarkMode ? 'bg-gray-700 text-white border-gray-500' : 'bg-white text-gray-800 border-gray-300'
+            }`}
+          >
+            <option value="Celsius">Celsius and Kilometers</option>
+            <option value="Fahrenheit">Fahrenheit and Miles</option>
+          </select>
+        </div>
+      )}
+    </div>
+  </div>
+  
+  {data.current && !error && (
+    <p className={`mt-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+      Current wind direction: {data.current.wind_dir}
+    </p>
+  )}
+</section>
 
-              {data.current && !error && (
-                <p className="mt-4 text-gray-800">
-                  Current wind direction: {data.current.wind_dir}
-                </p>
-              )}
-            </section>
+
 
             {/* Statistical Details */}
             <section className="grid grid-cols-2 gap-6 lg:grid-cols-3 mb-6">
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+              <div className={` ${isDarkMode ? 'bg-gray-600' : 'bg-white'} p-4 rounded-lg shadow-md flex flex-col items-start`}>
                 <div className="flex items-center space-x-2">
                   <img src="./images/clouds.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Air Quality </span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Air Quality </span>
                 </div>
                 {data.current && !error && (
-                  <span className="text-2xl font-semibold ml-8">{(data.current.air_quality["gb-defra-index"])}</span>
+                  <span className={`text-2xl ${isDarkMode ? 'text-white' : 'text-black'} font-semibold ml-8`}>{(data.current.air_quality["gb-defra-index"])}</span>
                 )}
               </div>
 
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+              <div className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} p-4 rounded-lg shadow-md flex flex-col items-start`}>
                 <div className="flex items-center space-x-2">
                   <img src="./images/wind.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Wind</span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Wind</span>
                 </div>
                 {data.current && !error && (
                   <span className="text-2xl font-semibold ml-8">{isMPH ? data.current.wind_mph + ' mph' : data.current.wind_kph + ' km/h'}</span>
                 )}
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+              <div className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} p-4 rounded-lg shadow-md flex flex-col items-start`}>
                 <div className="flex items-center space-x-2">
                   <img src="./images/humidity.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Humidity</span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Humidity</span>
                 </div>
                 {data.current && !error && (
                   <span className="text-2xl font-semibold ml-8">{data.current.humidity}%</span>
                 )}
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+              <div className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} p-4 rounded-lg shadow-md flex flex-col items-start`}>
                 <div className="flex items-center space-x-2">
                   <img src="./images/vision.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Visibility</span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Visibility</span>
                 </div>
 
                 {data.current && !error && (
                   <span className="text-2xl font-semibold ml-8"> {isMPH ? data.current.vis_miles + ' mi' : data.current.vis_km + ' km'}</span>
                 )}
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+              <div className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} p-4 rounded-lg shadow-md flex flex-col items-start`}>
                 <div className="flex items-center space-x-2">
                   <img src="./images/air-pump.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Pressure</span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Pressure</span>
                 </div>
                 {data.current && !error && (
                   <span className="text-2xl font-semibold ml-8"> {data.current.pressure_in + ' in'}</span>
                 )}
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-start">
+              <div className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} p-4 rounded-lg shadow-md flex flex-col items-start`}>
                 <div className="flex items-center space-x-2">
                   <img src="./images/air-pump.gif" alt="Description of the image" className="size-6" />
-                  <span className="text-gray-800">Pressure</span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Pressure</span>
                 </div>
                 {data.current && !error && (
                   <span className="text-2xl font-semibold ml-8">{data.current.pressure_mb}°</span>
@@ -597,149 +705,187 @@ function Weather() {
 
             {/* Mobile version   weather day selection  */}
             <div className="flex justify-start items-center mb-4 block 982px:hidden ">
-              <section className="w-full rounded-lg pb-6">
-                {/* Button section */}
-                <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                  <div className="flex space-x-6">
-                    <button
-                      onClick={() => setSelectedButton("Today")}
-                      className={`${selectedButton === "Today"
-                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-                        }`}
-                    >
-                      Today
-                    </button>
-                    <button
-                      onClick={() => setSelectedButton("Tomorrow")}
-                      className={`${selectedButton === "Tomorrow"
-                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-                        }`}
-                    >
-                      Tomorrow
-                    </button>
-                    <button
-                      onClick={() => setSelectedButton("10 Days")}
-                      className={`${selectedButton === "10 Days"
-                        ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold`
-                        : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`
-                        }`}
-                    >
-                      10 Days
-                    </button>
+           <section className="w-full rounded-lg pb-6">
+  {/* Button section */}
+  <div className={`flex justify-between items-center mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+    <div className="flex space-x-6">
+      <button
+        onClick={() => {
+          setSelectedButton("Today");
+          setIsPopupOpen(false);  
+        }}
+        className={`${selectedButton === "Today" ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold` : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`}`}
+      >
+        Today
+      </button>
+      <button
+        onClick={() => {
+          setSelectedButton("Tomorrow");
+          setIsPopupOpen(false);  
+        }}
+        className={`${selectedButton === "Tomorrow" ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold` : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`}`}
+      >
+        Tomorrow
+      </button>
+      <button
+        onClick={() => {
+          setSelectedButton("10 Days");
+          setIsPopupOpen(false);  
+        }}
+        className={`${selectedButton === "10 Days" ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold` : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`}`}
+      >
+        10 Days
+      </button>
+    </div>
+  </div>
+
+  {/* Weather Cards */}
+
+  <div>
+    {/* For Today and Tomorrow */}
+    {(selectedButton === "Today" || selectedButton === "Tomorrow") && dataFor && !error && (
+      <div
+        ref={scrollRef2}
+        className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
+        onMouseDown={(e) =>
+          handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)
+        }
+        onMouseLeave={() => handleMouseUp(setIsDragging2)}
+        onMouseUp={() => handleMouseUp(setIsDragging2)}
+        onMouseMove={(e) =>
+          handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)
+        }
+        style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
+      >
+        {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
+          <div
+            key={index}
+            className={`p-4 ${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'}  rounded-lg min-w-[150px] text-start shadow-md`}
+          >
+            <div className="flex justify-start">
+              <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon" />
+            </div>
+            <p className="mt-2 text-sm ">{formatTime(hourData.time)}</p>
+            <p className="mt-1 text-sm font-semibold">{hourData.condition.text}</p>
+            <div className="flex items-center">
+              <p className="text-3xl font-bold">{isFahrenheit ? hourData.temp_f : hourData.temp_c}</p>
+              <p className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-600'} text-xl font-semibold  mb-2`}>
+                °{isFahrenheit ? 'F' : 'C'}
+              </p>
+            </div>
+            <p className="text-sm ">Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</p>
+            <p className="text-sm ">Humidity: {hourData.humidity}%</p>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {/* For 10 Days */}
+   {selectedButton === "10 Days" && dataFor && !error && (
+            <div
+            ref={scrollRef2}
+            className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
+            onMouseDown={(e) =>
+              handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)
+            }
+            onMouseLeave={() => handleMouseUp(setIsDragging2)}
+            onMouseUp={() => handleMouseUp(setIsDragging2)}
+            onMouseMove={(e) =>
+              handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)
+            }
+            style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
+          >
+            
+            
+              {dataFor.forecast.forecastday.slice(2).map((dayData, index) => (
+                <div
+                  key={index}
+                  className={`p-4 rounded-lg min-w-[150px] text-start shadow-md ${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} ${selectedDay === index + 2 ? 'border-2 border-blue-500' : ''}`}
+                  onClick={() => handleDayClick(index + 2)} // Toggle popup for clicked day
+                >
+                  <div className="flex justify-start">
+                    <img className="w-12 h-12" src={dayData.day.condition.icon} alt="Weather Icon" />
                   </div>
+                  <p className="mt-2 text-sm ">{new Date(dayData.date).toLocaleDateString('en-US', { weekday: 'long' })}</p>
+                  <p className="mt-1 text-sm font-semibold">{dayData.date}</p>
+                  <div className="flex items-center">
+                    <p className="text-3xl font-bold">
+                      {isFahrenheit ? dayData.day.avgtemp_f : dayData.day.avgtemp_c}
+                    </p>
+                    <p className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-600'} text-xl font-semibold mb-2`}>
+                      °{isFahrenheit ? 'F' : 'C'}
+                    </p>
+                  </div>
+                  <p className="text-sm ">Wind: {isMPH ? dayData.day.maxwind_mph : dayData.day.maxwind_kph} {isMPH ? 'mi/h' : 'km/h'}</p>
+                  <p className="text-sm ">Humidity: {dayData.day.avghumidity}%</p>
                 </div>
+              ))}
+            </div>
+          )}
 
-                {/* Weather Cards */}
-
-                <div>
-                  {(selectedButton === "Today" || selectedButton === "Tomorrow") && dataFor && !error && (
-                    <div
-                      ref={scrollRef2}
-                      className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
-                      onMouseDown={(e) =>
-                        handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)
-                      }
-                      onMouseLeave={() => handleMouseUp(setIsDragging2)}
-                      onMouseUp={() => handleMouseUp(setIsDragging2)}
-                      onMouseMove={(e) =>
-                        handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)
-                      }
-                      style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
-                    >
-                      {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
-                        <div
-                          key={index}
-                          className="p-4 bg-white rounded-lg min-w-[150px] text-start shadow-md"
-                        >
-                          <div className="flex justify-start">
-                            <img
-                              className="w-12 h-12"
-                              src={hourData.condition.icon}
-                              alt="Weather Icon"
-                            />
-                          </div>
-                          <p className="mt-2 text-sm text-gray-800">{formatTime(hourData.time)}</p>
-                          <p className="mt-1 text-sm font-semibold">{hourData.condition.text}</p>
-                          <div className="flex items-center">
-                            <p className="text-3xl font-bold">{isFahrenheit ? hourData.temp_f : hourData.temp_c}</p>
-                            <p className="text-xl font-semibold text-gray-600 mb-2">
-                              °{isFahrenheit ? 'F' : 'C'}
-                            </p>
-                          </div>
-                          <p className="text-sm text-gray-800">Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</p>
-                          <p className="text-sm text-gray-800">Humidity: {hourData.humidity}%</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {selectedButton === "10 Days" && dataFor && !error && (
-                    <div
-                      ref={scrollRef2}
-                      className="flex space-x-4 overflow-x-auto overflow-y-auto hide-scrollbar no-select"
-                      onMouseDown={(e) =>
-                        handleMouseDown(e, setIsDragging2, scrollRef2, setStartX2, setStartY2, setScrollLeft2, setScrollTop2)
-                      }
-                      onMouseLeave={() => handleMouseUp(setIsDragging2)}
-                      onMouseUp={() => handleMouseUp(setIsDragging2)}
-                      onMouseMove={(e) =>
-                        handleMouseMove(e, isDragging2, scrollRef2, startX2, startY2, scrollLeft2, scrollTop2)
-                      }
-                      style={{ cursor: isDragging2 ? 'grabbing' : 'grab' }}
-                    >
-                      {dataFor.forecast.forecastday.slice(2).map((dayData, index) => (
-                        <div
-                          key={index}
-                          className="p-4 bg-white rounded-lg min-w-[150px] text-start shadow-md"
-                        >
-                          <div className="flex justify-start">
-                            <img
-                              className="w-12 h-12"
-                              src={dayData.day.condition.icon}
-                              alt="Weather Icon"
-                            />
-                          </div>
-                          <p className="mt-2 text-sm text-gray-800">
-                            {new Date(dayData.date).toLocaleDateString('en-US', { weekday: 'long' })}
-                          </p>
-                          <p className="mt-1 text-sm font-semibold">{dayData.date}</p>
-                          <div className="flex items-center">
-                            <p className="text-3xl font-bold">
-                              {isFahrenheit ? dayData.day.avgtemp_f : dayData.day.avgtemp_c}
-                            </p>
-                            <p className="text-xl font-semibold text-gray-600 mb-2">
-                              °{isFahrenheit ? 'F' : 'C'}
-                            </p>
-                          </div>
-                          <p className="text-sm text-gray-800">
-                            Wind: {isMPH ? dayData.day.maxwind_mph : dayData.day.maxwind_kph} {isMPH ? 'mi/h' : 'km/h'}
-                          </p>
-                          <p className="text-sm text-gray-800">Humidity: {dayData.day.avghumidity}%</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+        {/* Popup for hourly data of selected day */}
+        {isPopupOpen && selectedDayData && selectedButton === "10 Days" && (
+          <div
+            key={forecastKey}
+            ref={scrollRef}
+            className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} animate-fadeIn`}
+            onMouseDown={handleMouseDown1}
+            onMouseLeave={handleMouseUp1}
+            onMouseUp={handleMouseUp1}
+            onMouseMove={handleMouseMove1}
+            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          >
+            {selectedDayData.map((hourData, index) => (
+          <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
+            <div className="flex items-center space-x-2">
+              <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon" />
+              <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
+                <span className={`${isDarkMode ? 'text-white' : 'text-gray-700'} text-sm font-semibold`}>
+                  {formatTime(hourData.time)}
+                </span>
+                <span className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
+                  {hourData.condition.text}
+                </span>
+              </div>
+            </div>
+            <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center">
+                <div className={`${isDarkMode ? 'text-white' : 'text-gray-800'} text-2xl font-semibold`}>
+                  {isFahrenheit ? hourData.temp_f : hourData.temp_c}
+                </div>
+                <p className={`${isDarkMode ? 'text-white' : 'text-gray-600'} text-xl font-semibold pr-2 mb-2`}>
+                  °{isFahrenheit ? 'F' : 'C'}
+                </p>
+              </div>
+              <div className="flex flex-col items-start">
+                <span className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-600'} `}>Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</span>
+                <span className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-600'} `}>Humidity: {hourData.humidity}%</span>
+              </div>
+            </div>
+          </div>
+        ))}
+          </div>
+        )}
+      </div>
+    </section>
                   {error && <p>Error loading weather data: {error.message}</p>}
-                </div>
-              </section>
             </div>
 
             {/*Sun & Moon summary */}
-            <section className="bg-white p-6 rounded-lg shadow-md pb-14">
+            <section className={`${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} p-6 rounded-lg shadow-md pb-14`}>
               <div className="flex justify-start items-center mb-4">
-                <span className="text-gray-800">Sun & Moon Summary</span>
+                <span className="">Sun & Moon Summary</span>
               </div>
 
               {/* Sun Section */}
               <div className="flex flex-col xsm:flex-row justify-between items-start">
                 <div className="flex items-center">
                   <img src="./images/sun.gif" alt="Sun Icon" className="size-12" />
-                  <div className="flex flex-col text-sm text-gray-800 pl-5">
+                  <div className="flex flex-col text-sm  pl-5">
                     <div>Air Quality</div>
                     {data.current && !error && (
-                      <span className="text-xl font-semibold text-black">
+                      <span className={`${isDarkMode ? 'text-white' : 'text-black'} text-xl font-semibold `}>
                         {data.current.air_quality["gb-defra-index"]}
                       </span>
                     )}
@@ -747,12 +893,12 @@ function Weather() {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-4 pt-4 xsm:pt-0 max440:w-[70%]">
+                <div className="flex items-center space-x-4 pt-4 xsm:pt-0 max440:w-[70%]">
                     <div className="flex flex-col items-center">
                       <img src="./images/field.gif" alt="Sunrise Icon" className="w-6 h-6 mb-1" />
-                      <div className="text-gray-800 text-sm">Sunrise</div>
+                      <div className=" text-sm">Sunrise</div>
                       {dataFor && !error && (
-                        <span className="text-sm font-semibold text-black">
+                        <span className= {`${isDarkMode ? 'text-white' : 'text-black'}text-sm font-semibold `}>
                           {dataFor.forecast.forecastday[0].astro.sunrise}
                         </span>
                       )}
@@ -780,9 +926,9 @@ function Weather() {
 
                     <div className="flex flex-col items-center">
                       <img src="./images/sunset.gif" alt="Sunset Icon" className="w-6 h-6 mb-1" />
-                      <div className="text-gray-800 text-sm">Sunset</div>
+                      <div className=" text-sm">Sunset</div>
                       {dataFor && !error && (
-                        <span className="text-sm font-semibold text-black">
+                        <span className={`${isDarkMode ? 'text-white' : 'text-black'}text-sm font-semibold `}>
                           {dataFor.forecast.forecastday[0].astro.sunset}
                         </span>
                       )}
@@ -795,10 +941,10 @@ function Weather() {
               <div className="flex flex-col xsm:flex-row justify-between items-start pt-12">
                 <div className="flex items-center">
                   <img src="./images/moon.gif" alt="Moon Icon" className="size-12" />
-                  <div className="flex flex-col text-sm text-gray-800 pl-5">
+                  <div className="flex flex-col text-sm  pl-5">
                     <div>Air Quality</div>
                     {data.current && !error && (
-                      <span className="text-xl font-semibold text-black">
+                        <span className={`${isDarkMode ? 'text-white' : 'text-black'}text-xl font-semibold `}>
                         {data.current.air_quality["gb-defra-index"]}
                       </span>
                     )}
@@ -809,9 +955,9 @@ function Weather() {
                   <div className="flex items-center space-x-4 pt-6 xsm:pt-0 max440:w-[70%]">
                     <div className="flex flex-col items-center">
                       <img src="./images/moon-rise.gif" alt="Moonrise Icon" className="w-6 h-6 mb-1" />
-                      <div className="text-gray-800 text-sm">Moonrise</div>
+                      <div className=" text-sm">Moonrise</div>
                       {dataFor && !error && (
-                        <span className="text-sm font-semibold text-black">
+                        <span className={`${isDarkMode ? 'text-white' : 'text-black'}text-sm font-semibold `}>
                           {dataFor.forecast.forecastday[0].astro.moonrise}
                         </span>
                       )}
@@ -839,9 +985,9 @@ function Weather() {
 
                     <div className="flex flex-col items-center">
                       <img src="./images/moon-set.gif" alt="Moonset Icon" className="w-6 h-6 mb-1" />
-                      <div className="text-gray-800 text-sm">Moonset</div>
+                      <div className=" text-sm">Moonset</div>
                       {dataFor && !error && (
-                        <span className="text-sm font-semibold text-black">
+                        <span className={`${isDarkMode ? 'text-white' : 'text-black'} text-sm font-semibold`}>
                           {dataFor.forecast.forecastday[0].astro.moonset}
                         </span>
                       )}
@@ -850,143 +996,138 @@ function Weather() {
                 </div>
               </div>
             </section>
+
           </div>
 
           {/* weather day selection */}
-          <div className="relative w-[40%] bg-white p-6 rounded-lg shadow-md hidden 982px:block">
-            <div className="flex justify-start items-center mb-4">
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => handleButtonClick("Today")}
-                  className={`pb-1 ${selectedButton === "Today"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  Today
-                </button>
-                <button
-                  onClick={() => handleButtonClick("Tomorrow")}
-                  className={`pb-1 ${selectedButton === "Tomorrow"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  Tomorrow
-                </button>
-                <button
-                  onClick={() => handleButtonClick("10 Days")}
-                  className={`pb-1 ${selectedButton === "10 Days"
-                    ? "text-black border-b-2 border-black font-semibold"
-                    : "text-gray-800"
-                    }`}
-                >
-                  10 Days
-                </button>
+          <div className={`relative w-[40%] ${isDarkMode ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'} p-6 rounded-lg shadow-md hidden 982px:block`}>
+      <div className="flex justify-start items-center mb-4">
+        <div className="flex space-x-4">
+          <button
+            onClick={() => handleButtonClick('Today')}
+            className={`pb-1 ${selectedButton === 'Today' ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold` : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`}`}
+          >
+            Today
+          </button>
+          <button
+            onClick={() => handleButtonClick('Tomorrow')}
+            className={`pb-1 ${selectedButton === 'Tomorrow' ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold` : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`}`}
+          >
+            Tomorrow
+          </button>
+          <button
+            onClick={() => handleButtonClick('10 Days')}
+            className={`pb-1 ${selectedButton === '10 Days' ? `${isDarkMode ? 'text-white border-white' : 'text-black border-black'} border-b-2 font-semibold` : `${isDarkMode ? 'text-gray' : 'text-gray-800'}`}`}
+          >
+            10 Days
+          </button>
+        </div>
+      </div>
+
+      <div>
+        {(selectedButton === 'Today' || selectedButton === 'Tomorrow') && dataFor && !error && (
+          <div
+            key={dataFor.forecastKey}
+            className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select animate-fadeIn`}
+          >
+            {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
+              <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
+                <div className="flex items-center space-x-2">
+                  <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon" />
+                  <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
+                    <span className={`${isDarkMode ? 'text-white' : 'text-gray-700'} text-sm font-semibold`}>{formatTime(hourData.time)}</span>
+                    <span className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>{hourData.condition.text}</span>
+                  </div>
+                </div>
+                <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center">
+                    <div className={`${isDarkMode ? 'text-white' : 'text-gray-800'} text-2xl font-semibold`}>
+                      {isFahrenheit ? hourData.temp_f : hourData.temp_c}
+                    </div>
+                    <p className={`${isDarkMode ? 'text-white' : 'text-gray-600'} text-xl font-semibold pr-2 mb-2`}>
+                      °{isFahrenheit ? 'F' : 'C'}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-600'}`}>Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</span>
+                    <span className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-600'}`}>Humidity: {hourData.humidity}%</span>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div>
-              {(selectedButton === "Today" || selectedButton === "Tomorrow") && dataFor && !error && (
-                <div
-                  key={forecastKey}
-                  ref={scrollRef}
-                  className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} animate-fadeIn`}
-                  onMouseDown={handleMouseDown1}
-                  onMouseLeave={handleMouseUp1}
-                  onMouseUp={handleMouseUp1}
-                  onMouseMove={handleMouseMove1}
-                  style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-                >
-                  {dataFor.forecast.forecastday[0].hour.map((hourData, index) => (
-                    <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
-                      <div className="flex items-center space-x-2">
-                        <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon"></img>
-                        <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
-                          <span className="text-sm font-semibold text-gray-700">{formatTime(hourData.time)}</span>
-                          <span className="font-semibold text-gray-700">{hourData.condition.text}</span>
-                        </div>
-                      </div>
-                      <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center">
-                          <div className="text-2xl font-semibold text-gray-800">
-                            {isFahrenheit ? hourData.temp_f : hourData.temp_c}
-                          </div>
-                          <p className="text-xl font-semibold text-gray-600 pr-2 mb-2">
-                            °{isFahrenheit ? 'F' : 'C'}
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-start">
-                          <span className="text-gray-800">Wind: {isMPH ? hourData.wind_mph : hourData.wind_kph} {isMPH ? 'mi/h' : 'km/h'}</span>
-                          <span className="text-gray-800">Humidity: {hourData.humidity}%</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {selectedButton === "10 Days" && dataFor && !error && (
-                <div
-                  key={forecastKey}
-                  ref={scrollRef}
-                  className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} animate-fadeIn`}
-                  onMouseDown={handleMouseDown1}
-                  onMouseLeave={handleMouseUp1}
-                  onMouseUp={handleMouseUp1}
-                  onMouseMove={handleMouseMove1}
-                  style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-                >
-                  {dataFor.forecast.forecastday.slice(2).map((dayData, index) => (
-                    <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
-                      <div className="flex items-center space-x-2">
-                        <img className="w-12 h-12" src={dayData.day.condition.icon} alt="Weather Icon"></img>
-                        <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
-                          <span className="text-sm font-semibold text-gray-700">
-                            {new Date(dayData.date).toLocaleDateString('en-US', { weekday: 'long' })}
-                          </span>
-                          <span className="font-semibold text-gray-700">{dayData.date}</span>
-                        </div>
-                      </div>
-                      <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center">
-                          <div className="text-2xl font-semibold text-gray-800">
-                            {isFahrenheit ? dayData.day.avgtemp_f : dayData.day.avgtemp_c}
-                          </div>
-                          <p className="text-xl font-semibold text-gray-600 pr-2 mb-2">
-                            °{isFahrenheit ? 'F' : 'C'}
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-start">
-                          <span className="text-gray-800">Wind: {isMPH ? dayData.day.maxwind_mph : dayData.day.maxwind_kph} {isMPH ? 'mi/h' : 'km/h'}</span>
-                          <span className="text-gray-800">Humidity: {dayData.day.avghumidity}%</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {error && <p>Error loading weather data: {error.message}</p>}
-            </div>
-
-            <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                className="w-7 h-7 text-gray-500"
-              >
-                <path d="M12 16l-6-6h12l-6 6z" />
-              </svg>
-            </div>
+            ))}
           </div>
+        )}
+
+ {selectedButton === '10 Days' && dataFor && !error && (
+  <div
+    
+    className={`relative custom-height overflow-y-auto overflow-x-auto whitespace-nowrap custom-scrollbar pr-2 no-select animate-fadeIn`}
+   
+  >
+    {dataFor.forecast.forecastday.slice(2).map((dayData, index) => (
+      <div
+        key={index}
+        className={`flex justify-between items-center h-16  pb-2 pt-2 cursor-pointer  ${selectedDay === index + 2 ? 'border-2 border-blue-500' : 'border-b-2 border-gray-300'}`}
+        onClick={() => handleDayClick(index + 2)} // Trigger click handler
+      >
+        <div className="flex items-center space-x-2">
+          <img className="w-12 h-12" src={dayData.day.condition.icon} alt="Weather Icon" />
+          <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
+            <span className={`${isDarkMode ? 'text-white' : 'text-gray-700'} text-sm font-semibold`}>
+              {new Date(dayData.date).toLocaleDateString('en-US', { weekday: 'long' })}
+            </span>
+            <span className={`${isDarkMode ? 'text-white' : 'text-gray-700'} font-semibold`}>
+              {dayData.date}
+            </span>
+          </div>
+        </div>
+        <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center">
+            <div className={`${isDarkMode ? 'text-white' : 'text-gray-800'} text-2xl font-semibold`}>
+              {isFahrenheit ? dayData.day.avgtemp_f : dayData.day.avgtemp_c}
+            </div>
+            <p className={`${isDarkMode ? 'text-white' : 'text-gray-600'} text-xl font-semibold pr-2 mb-2`}>
+              °{isFahrenheit ? 'F' : 'C'}
+            </p>
+          </div>
+          <div className="flex flex-col items-start">
+            <span className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-600'}`}>
+              Wind: {isMPH ? dayData.day.maxwind_mph : dayData.day.maxwind_kph} {isMPH ? 'mi/h' : 'km/h'}
+            </span>
+            <span className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-600'}`}>
+              Humidity: {dayData.day.avghumidity}%
+            </span>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+
+{/* Show Popup for hourly data of the selected day */}
+{isPopupOpen && selectedDayData && selectedButton === "10 Days" && (
+      <WeatherPopup data={selectedDayData} onClose={() => setIsPopupOpen(false)} />
+    )}
+
+        {error && <p>Error loading weather data: {error.message}</p>}
+      </div>
+
+      <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-7 h-7 text-gray-500">
+          <path d="M12 16l-6-6h12l-6 6z" />
+        </svg>
+      </div>
+    </div>
+
+
+
         </div>
       </main>
 
     </div>
   );
 }
-
 export default Weather;
