@@ -34,14 +34,19 @@ module.exports = {
           '0%': { transform: 'translateX(0)', opacity: '1' },
           '100%': { transform: 'translateX(-100%)', opacity: '0' },
         },
+        // Add the spinning animation keyframes
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
       },
       animation: {
         fadeIn: 'fadeIn 0.5s ease-in-out',
+        slideIn: 'slideIn 0.3s ease-out forwards',
+        slideOut: 'slideOut 0.3s ease-out forwards',
+        // Define the spin animation here
+        spin: 'spin 1s linear infinite',
       },
-    },
-    animation: {
-      slideIn: 'slideIn 0.3s ease-out forwards',
-      slideOut: 'slideOut 0.3s ease-out forwards',
     },
   },
   plugins: [
@@ -98,9 +103,6 @@ module.exports = {
           '-webkit-user-select': 'none', 
           '-moz-user-select': 'none', 
         },
-
-        
-      
       });
     },
   ],
