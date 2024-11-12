@@ -5,5 +5,5 @@ in given date and given city. Websitewith users permision tracks users location 
 users city when he first opens website. Website also displays hourly data. <br>
 
 # How to launch website in localhost <br>
-All you need to do is to open terminal and write: npm run start <br>
-and it should start. 
+All you need to do is to open terminal and write: "npm run start" and it should start. API doesn't require any specific command lines to work.
+
