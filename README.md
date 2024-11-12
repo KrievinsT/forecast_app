@@ -1,3 +1,4 @@
+
 # About the app <br>
 Website that displays current weather condition, humidity, temperature, how it actually feels,
 minimal, maximal and average temperature, air polution, UV strenght and sunset/sunrise and moonset/moonrise
