@@ -1130,5 +1130,4 @@ const handleDayClick = (dayIndex) => {
     </div>
   );
 }
-
 export default Weather;
