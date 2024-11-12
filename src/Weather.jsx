@@ -93,7 +93,6 @@ function Weather() {
   const loadingIndicator = ((isSearching && !location) || error) && (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50 z-50">
       <div className="w-16 h-16 border-4 border-t-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
-
     </div>
   );
 
@@ -111,7 +110,6 @@ function Weather() {
   };
 
   
-
   const fetchData = () => {
     if (!location) return;
     setIsLoading(true);
@@ -839,14 +837,14 @@ const handleDayClick = (dayIndex) => {
           <div key={index} className="flex justify-between items-center h-16 border-b-2 border-gray-300 pb-2 pt-2">
             <div className="flex items-center space-x-2">
               <img className="w-12 h-12" src={hourData.condition.icon} alt="Weather Icon" />
-              <div className="flex flex-col items-start overflow-hidden w-full sm:w-40 md:w-48 lg:w-55">
-                <span className={`${isDarkMode ? 'text-white' : 'text-gray-700'} text-sm font-semibold`}>
-                  {formatTime(hourData.time)}
-                </span>
-                <span className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
-                  {hourData.condition.text}
-                </span>
-              </div>
+              <div className="flex flex-col items-start overflow-hidden" style={{ width: '220px' }}>
+          <span className={`${isDarkMode ? 'text-white' : 'text-gray-700'} text-sm font-semibold`}>
+            {formatTime(hourData.time)}
+          </span>
+          <span className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
+            {hourData.condition.text}
+          </span>
+        </div>
             </div>
             <div className="h-12 border-l-2 border-gray-400 mx-2"></div>
             <div className="flex items-center space-x-2">
@@ -1130,4 +1128,5 @@ const handleDayClick = (dayIndex) => {
     </div>
   );
 }
+
 export default Weather;
