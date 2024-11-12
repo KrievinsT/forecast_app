@@ -33,7 +33,6 @@ function Weather() {
   const [liveTime, setLiveTime] = useState("");
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-
   useEffect(() => {
     if (data.location) {
       setLiveTime(data.location.localtime);
@@ -157,7 +156,7 @@ function Weather() {
       selectedDate = tomorrow.toISOString().split('T')[0];
       urlFor += `&dt=${selectedDate}`; //gives date parameter to forecast API url
     } else if (selectedButton === "10 Days") {
-      urlFor += `&days=12`; //gives amount of days parameter to forecast API url 
+      urlFor += `&days=12`; //gives amount of days parameter to forecast API url
     }
 
     return fetch(urlFor)
