@@ -175,41 +175,63 @@ function Weather() {
       });
   };
 
-  const fetchDataFor = () => {
+  const fetchDataFor = async () => {
     if (!location) return;
     setIsLoading(true);
-
+  
     let urlFor = `https://api.weatherapi.com/v1/forecast.json?key=1f8a5c56a5744e389e741625240111&q=${location}&aqi=yes`;
     let selectedDate = "";
-
+  
     if (selectedButton === "Today") {
       selectedDate = today.toISOString().split('T')[0];
       urlFor += `&dt=${selectedDate}`;
+  
+      try {
+        const response = await fetch(urlFor);
+        const data = await response.json();
+        console.log("Full data:", data);
+  
+        const currentTime = new Date().toISOString().split('T')[1]; // Current time in HH:MM:SS format
+  
+        // Filter the data to exclude entries with time less than the current time
+        const filteredData = data.forecast.forecastday[0].hour.filter(hourData => {
+          return hourData.time.split(' ')[1] >= currentTime;
+        });
+  
+        // Update state with filtered data
+        setDataFor({ forecast: { forecastday: [{ hour: filteredData }] } });
+        console.log("Filtered data:", filteredData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     } else if (selectedButton === "Tomorrow") {
       selectedDate = tomorrow.toISOString().split('T')[0];
       urlFor += `&dt=${selectedDate}`;
+  
+      try {
+        const response = await fetch(urlFor);
+        const data = await response.json();
+        setDataFor(data);
+        console.log("Data for tomorrow:", data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     } else if (selectedButton === "10 Days") {
       urlFor += `&days=12`;
+  
+      try {
+        const response = await fetch(urlFor);
+        const data = await response.json();
+        setDataFor(data);
+        console.log("Data for 10 days:", data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
-
-    return fetch(urlFor)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('City not found or doesn’t exist');
-        }
-        return response.json();
-      })
-      .then(dataFor => {
-        console.log('Forecast data:', dataFor);
-        setDataFor(dataFor);
-        setError(null);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        handleError(error.message);
-        setIsLoading(false);
-      });
+  
+    setIsLoading(false);
   };
+  
 
   useEffect(() => {
     if (location && selectedButton) {

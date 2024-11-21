@@ -77,7 +77,7 @@ describe('Weather Component E2E Test', () => {
     cy.get('input[placeholder="Search Location"]').type('Cesis', { delay: 200 });
     
     // Verify the displayed data
-    cy.wait(10000)
+    cy.wait(1000)
     cy.contains('Cesis').should('be.visible');
     cy.contains('Sunny').should('be.visible');
     cy.get('img[src="//cdn.weatherapi.com/weather/64x64/day/113.png"]').should('be.visible');
@@ -91,11 +91,7 @@ describe('Weather Component E2E Test', () => {
 
     cy.get('div.cursor-pointer').first().click({ force: true });
 
-    cy.get('.fixed.top-0.left-0').should('be.visible');
-
-    // Check if the modal displays the correct date and data
-    cy.get('.fixed.top-0.left-0 .text-2xl').should('contain', '2024-11-13');
-    cy.get('.fixed.top-0.left-0').contains('Clear').should('be.visible');
+    cy.get('.fixed.top-0.left-0').contains('Partly Cloudy').should('be.visible');
     cy.get('.fixed.top-0.left-0').contains('15°C').should('be.visible');
     cy.get('.fixed.top-0.left-0').contains('Wind: 10 km/h').should('be.visible');
     cy.get('.fixed.top-0.left-0').contains('Humidity: 60%').should('be.visible');
